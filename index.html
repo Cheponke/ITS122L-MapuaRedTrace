@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapúa RedTrace — Home</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="pages/policies.html">Help/Policies</a>
+      <a href="pages/notifications.html">Notifications</a>
+      <a href="pages/login.html" class="btn">Donate Now</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Save Lives with <span class="text-red">Red Trace</span></h1>
+    <p>A comprehensive blood donation management system for the Mapúa University community.</p>
+    <div class="hero-actions">
+      <a href="pages/login.html" class="btn">Donate Now</a>
+      <a href="pages/donor-dashboard.html" class="btn btn-outline">View Dashboard</a>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat-card">
+      <h2 id="stat-donors">—</h2>
+      <p>Registered Donors</p>
+    </div>
+    <div class="stat-card">
+      <h2 id="stat-donations">—</h2>
+      <p>Total Donations</p>
+    </div>
+    <div class="stat-card">
+      <h2 id="stat-lives">—</h2>
+      <p>Lives Impacted</p>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    async function loadStats() {
+      const { count: donorCount } = await supabaseClient
+        .from(TABLES.DONORS).select("*", { count: "exact", head: true });
+      const { count: donationCount } = await supabaseClient
+        .from(TABLES.DONATION_PROCESS).select("*", { count: "exact", head: true });
+      document.getElementById("stat-donors").textContent = donorCount ?? "—";
+      document.getElementById("stat-donations").textContent = donationCount ?? "—";
+      document.getElementById("stat-lives").textContent = donationCount ? donationCount * 3 : "—";
+    }
+    loadStats();
+  </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedTrace — Donor Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div>
+      <a href="../index.html">Home</a>
+      <a href="policies.html">Help/Policies</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="donation-process.html" class="btn">Donate Now</a>
+      <button class="nav-signout-btn" onclick="Auth.logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+
+    <div class="user-header">
+      <div>
+        <h2 id="donor-name">Loading...</h2>
+        <p class="donor-id" id="donor-id"></p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <h3 id="stat-total-donations">—</h3>
+        <p>Total Donations</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="donor-blood-type">—</h3>
+        <p>Blood Type</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="donor-status">—</h3>
+        <p>Donor Status</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('profile-panel', 'history-panel')">My Profile</button>
+      <button class="tab-btn" onclick="switchTab('history-panel', 'profile-panel')">Donation History</button>
+    </div>
+
+    <!-- Profile Panel -->
+    <div id="profile-panel" class="panel">
+      <div class="profile-header">
+        <h3>Personal Information</h3>
+        <button class="btn" onclick="toggleEdit()">Edit Profile</button>
+      </div>
+
+      <div id="view-mode">
+        <label class="field-label">First Name</label><div class="field-val" id="view-first-name">—</div>
+        <label class="field-label">Last Name</label><div class="field-val" id="view-last-name">—</div>
+        <label class="field-label">Email</label><div class="field-val" id="view-email">—</div>
+        <label class="field-label">Contact Number</label><div class="field-val" id="view-contact">—</div>
+        <label class="field-label">Address</label><div class="field-val" id="view-address">—</div>
+      </div>
+
+      <div id="edit-mode" class="hidden">
+        <label>First Name</label><input type="text" id="edit-first-name" />
+        <label>Last Name</label><input type="text" id="edit-last-name" />
+        <label>Email</label><input type="email" id="edit-email" />
+        <label>Contact Number</label><input type="tel" id="edit-contact" />
+        <label>Address</label><input type="text" id="edit-address" />
+        <div class="btn-row">
+          <button class="btn" onclick="saveProfile()">Save Changes</button>
+          <button class="btn btn-outline" onclick="toggleEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div id="history-panel" class="panel hidden">
+      <h3>Donation History</h3>
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Status</th><th>Quantity</th><th>Blood Type</th></tr>
+        </thead>
+        <tbody id="donation-history-tbody">
+          <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/donor.js"></script>
+  <script>
+    let currentDonorProfile = null;
+
+    async function init() {
+      const session = await Auth.requireAuth();
+      const userId = session.user.id;
+      currentDonorProfile = await Donor.getProfile(userId);
+      if (!currentDonorProfile) { alert("Could not load donor profile."); return; }
+
+      document.getElementById("donor-name").textContent = `${currentDonorProfile.first_name} ${currentDonorProfile.last_name}`;
+      document.getElementById("donor-id").textContent = `Donor ID: ${currentDonorProfile.donor_id}`;
+      document.getElementById("donor-blood-type").textContent = currentDonorProfile.blood_type || "—";
+      document.getElementById("donor-status").textContent = currentDonorProfile.status || "Active";
+      document.getElementById("view-first-name").textContent = currentDonorProfile.first_name;
+      document.getElementById("view-last-name").textContent = currentDonorProfile.last_name;
+      document.getElementById("view-email").textContent = currentDonorProfile.email || "—";
+      document.getElementById("view-contact").textContent = currentDonorProfile.contact_number || "—";
+      document.getElementById("view-address").textContent = currentDonorProfile.address || "—";
+      document.getElementById("edit-first-name").value = currentDonorProfile.first_name || "";
+      document.getElementById("edit-last-name").value = currentDonorProfile.last_name || "";
+      document.getElementById("edit-email").value = currentDonorProfile.email || "";
+      document.getElementById("edit-contact").value = currentDonorProfile.contact_number || "";
+      document.getElementById("edit-address").value = currentDonorProfile.address || "";
+
+      const history = await Donor.getDonationHistory(currentDonorProfile.donor_id);
+      Donor.renderDonationHistory(history);
+      document.getElementById("stat-total-donations").textContent = history.length;
+    }
+
+    function toggleEdit() {
+      document.getElementById("view-mode").classList.toggle("hidden");
+      document.getElementById("edit-mode").classList.toggle("hidden");
+    }
+
+    async function saveProfile() {
+      if (!currentDonorProfile) return;
+      const updates = {
+        first_name: document.getElementById("edit-first-name").value,
+        last_name: document.getElementById("edit-last-name").value,
+        contact_number: document.getElementById("edit-contact").value,
+        address: document.getElementById("edit-address").value,
+      };
+      const success = await Donor.updateProfile(currentDonorProfile.donor_id, updates);
+      if (success) { alert("Profile updated!"); location.reload(); }
+    }
+
+    function switchTab(show, hide) {
+      document.getElementById(show).classList.remove("hidden");
+      document.getElementById(hide).classList.add("hidden");
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+
+    init();
+  </script>
+</body>
+</html>

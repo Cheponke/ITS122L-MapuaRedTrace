@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedTrace — Staff Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo"><strong>🩸 RedTrace — Staff Portal</strong></div>
+    <div>
+      <a href="../index.html">Home</a>
+      <a href="notifications.html">Notifications</a>
+      <button class="nav-signout-btn" onclick="Auth.logout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+
+    <div class="header-card">
+      <div>
+        <h2>Staff Dashboard</h2>
+        <p>Hospital Staff Portal</p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <h3 id="stat-total">—</h3>
+        <p>Total Donors</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="stat-pending" class="text-orange">—</h3>
+        <p>Pending Approval</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="stat-active" class="text-green">—</h3>
+        <p>Active Donors</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="stat-inactive" class="text-muted">—</h3>
+        <p>Inactive Donors</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showPanel('donors-panel', this)">Manage Donors</button>
+      <button class="tab-btn" onclick="showPanel('inventory-panel', this)">Manage Inventory</button>
+    </div>
+
+    <!-- MANAGE DONORS -->
+    <div id="donors-panel" class="panel">
+      <div class="toolbar">
+        <h3>Donor Management</h3>
+        <div class="toolbar-actions">
+          <input type="text" id="search-donors" placeholder="Search donors..." oninput="searchDonors()" />
+          <select id="filter-status" onchange="searchDonors()">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Donor ID</th><th>Name</th><th>Email</th><th>Blood Type</th><th>Status</th><th>Registered</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="donors-tbody">
+          <tr><td colspan="7">Loading donors...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MANAGE INVENTORY -->
+    <div id="inventory-panel" class="panel hidden">
+      <div class="toolbar">
+        <h3>Blood Inventory Management</h3>
+        <div class="toolbar-actions">
+          <input type="text" id="search-inventory" placeholder="Search inventory..." oninput="searchInventory()" />
+          <select id="filter-blood-type" onchange="searchInventory()">
+            <option value="">All Types</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats-row" style="margin-bottom:1.5rem;">
+        <div class="stat-card inv-card-blue"><h3 id="inv-total">—</h3><p>Total Units</p></div>
+        <div class="stat-card inv-card-green"><h3 id="inv-available">—</h3><p>Available</p></div>
+        <div class="stat-card inv-card-yellow"><h3 id="inv-reserved">—</h3><p>Reserved</p></div>
+        <div class="stat-card inv-card-red"><h3 id="inv-expired">—</h3><p>Expired</p></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Blood Type</th><th>Quantity (mL)</th><th>Expiration</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="inventory-tbody">
+          <tr><td colspan="6">Loading inventory...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- EDIT DONOR MODAL -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal-box">
+      <h3>Edit Donor Record</h3>
+      <input type="hidden" id="modal-donor-id" />
+      <label>First Name</label><input type="text" id="modal-first-name" />
+      <label>Last Name</label><input type="text" id="modal-last-name" />
+      <label>Email</label><input type="email" id="modal-email" />
+      <label>Blood Type</label>
+      <select id="modal-blood-type">
+        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+      </select>
+      <label>Status</label>
+      <select id="modal-status">
+        <option>Active</option><option>Inactive</option><option>Pending</option>
+      </select>
+      <div class="modal-actions">
+        <button class="btn" onclick="saveEditModal()">Save</button>
+        <button class="btn btn-gray" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/staff.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    let allDonors = [], allInventory = [];
+
+    async function init() {
+      await Auth.requireStaff();
+      await loadDonors();
+      await loadInventory();
+    }
+
+    async function loadDonors() {
+      allDonors = await Staff.getAllDonors();
+      Staff.renderDonorsTable(allDonors);
+      document.getElementById("stat-total").textContent = allDonors.length;
+      document.getElementById("stat-active").textContent = allDonors.filter(d => d.status === "Active").length;
+      document.getElementById("stat-inactive").textContent = allDonors.filter(d => d.status === "Inactive").length;
+      document.getElementById("stat-pending").textContent = allDonors.filter(d => d.status === "Pending").length;
+    }
+
+    async function loadInventory() {
+      allInventory = await Staff.getInventory();
+      Staff.renderInventoryTable(allInventory);
+      document.getElementById("inv-total").textContent = allInventory.length;
+      document.getElementById("inv-available").textContent = allInventory.filter(i => i.inventory_status === "Available").length;
+      document.getElementById("inv-reserved").textContent = allInventory.filter(i => i.inventory_status === "Reserved").length;
+      document.getElementById("inv-expired").textContent = allInventory.filter(i => i.inventory_status === "Expired").length;
+    }
+
+    function searchDonors() {
+      const q = document.getElementById("search-donors").value.toLowerCase();
+      const status = document.getElementById("filter-status").value;
+      const filtered = allDonors.filter(d => {
+        const name = `${d.first_name} ${d.last_name}`.toLowerCase();
+        return (!q || name.includes(q) || (d.email || "").includes(q)) && (!status || d.status === status);
+      });
+      Staff.renderDonorsTable(filtered);
+    }
+
+    function searchInventory() {
+      const q = document.getElementById("search-inventory").value.toLowerCase();
+      const bt = document.getElementById("filter-blood-type").value;
+      const filtered = allInventory.filter(i =>
+        (!q || (i.blood_type || "").toLowerCase().includes(q)) && (!bt || i.blood_type === bt)
+      );
+      Staff.renderInventoryTable(filtered);
+    }
+
+    function showPanel(panelId, btn) {
+      document.querySelectorAll(".panel").forEach(p => p.classList.add("hidden"));
+      document.getElementById(panelId).classList.remove("hidden");
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    Staff.openEditModal = async function(donorId) {
+      const donor = allDonors.find(d => String(d.donor_id) === String(donorId));
+      if (!donor) return;
+      document.getElementById("modal-donor-id").value = donor.donor_id;
+      document.getElementById("modal-first-name").value = donor.first_name || "";
+      document.getElementById("modal-last-name").value = donor.last_name || "";
+      document.getElementById("modal-email").value = donor.email || "";
+      document.getElementById("modal-blood-type").value = donor.blood_type || "O+";
+      document.getElementById("modal-status").value = donor.status || "Active";
+      document.getElementById("edit-modal").style.display = "flex";
+    };
+
+    async function saveEditModal() {
+      const donorId = document.getElementById("modal-donor-id").value;
+      const updates = {
+        first_name: document.getElementById("modal-first-name").value,
+        last_name: document.getElementById("modal-last-name").value,
+        email: document.getElementById("modal-email").value,
+        blood_type: document.getElementById("modal-blood-type").value,
+        status: document.getElementById("modal-status").value,
+      };
+      const success = await Staff.updateDonor(donorId, updates);
+      if (success) { closeModal(); await loadDonors(); }
+    }
+
+    function closeModal() { document.getElementById("edit-modal").style.display = "none"; }
+
+    init();
+  </script>
+</body>
+</html>

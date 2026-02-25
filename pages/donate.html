@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate – Mapúa RedTrace</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ADD YOUR CSS HERE: <link rel="stylesheet" href="../css/style.css" /> -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #fff8f8; }
+    nav { background: #c0392b; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    nav .logo { color: white; font-weight: bold; text-decoration: none; }
+    nav a { color: white; margin-left: 1rem; text-decoration: none; }
+
+    .breadcrumb { background: #c0392b; color: white; text-align: center; padding: 0.4rem; font-size: 0.85rem; }
+
+    /* Stepper */
+    .stepper { display: flex; justify-content: center; gap: 0; padding: 1.5rem 2rem; background: white; border-bottom: 1px solid #eee; }
+    .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+    .step-circle { width: 36px; height: 36px; border-radius: 50%; background: #ddd; color: #999; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; z-index: 1; }
+    .step.active .step-circle { background: #c0392b; color: white; }
+    .step.done .step-circle { background: #27ae60; color: white; }
+    .step-label { font-size: 0.7rem; color: #999; margin-top: 0.3rem; text-align: center; }
+    .step.active .step-label { color: #c0392b; font-weight: bold; }
+    .step-line { position: absolute; top: 18px; left: 50%; width: 100%; height: 2px; background: #ddd; z-index: 0; }
+    .step:last-child .step-line { display: none; }
+
+    /* Pages */
+    .page { display: none; max-width: 600px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .page.active { display: block; }
+    h2 { color: #c0392b; margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 1.5rem; }
+    .tab { padding: 0.5rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab.active { border-color: #c0392b; color: #c0392b; font-weight: bold; }
+    .role-btns { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .role-btn { flex: 1; padding: 0.5rem; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white; font-size: 0.95rem; }
+    .role-btn.selected { border-color: #c0392b; background: #fff0f0; color: #c0392b; font-weight: bold; }
+    label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.25rem; margin-top: 0.75rem; }
+    input { width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-top: 1rem; }
+    .btn-primary { background: #c0392b; color: white; font-weight: bold; }
+    .btn-success { background: #27ae60; color: white; font-weight: bold; }
+    .error-msg { color: #c0392b; font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+
+    /* Assessment */
+    .question-group { margin-bottom: 0.75rem; padding: 0.75rem; border: 1px solid #eee; border-radius: 6px; }
+    .question-group .category { font-size: 0.7rem; color: #888; background: #f5f5f5; padding: 0.1rem 0.4rem; border-radius: 3px; display: inline-block; margin-bottom: 0.4rem; }
+    .question-text { font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .yn-btns { display: flex; gap: 0.5rem; }
+    .yn-btn { padding: 0.25rem 1rem; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; background: white; }
+    .yn-btn.selected-yes { background: #e74c3c; color: white; border-color: #e74c3c; }
+    .yn-btn.selected-no { background: #27ae60; color: white; border-color: #27ae60; }
+
+    /* Pop-up modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; padding: 2rem; border-radius: 8px; max-width: 420px; text-align: center; }
+    .modal h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+    .modal.eligible h3 { color: #27ae60; }
+    .modal.not-eligible h3 { color: #c0392b; }
+    .modal p { color: #555; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .modal .btn { width: auto; display: inline-block; padding: 0.5rem 1.5rem; }
+
+    /* Screening */
+    .vital-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .vital-card { border: 1px solid #eee; border-radius: 6px; padding: 1rem; }
+    .vital-card .vital-label { font-size: 0.75rem; color: #888; }
+    .vital-card .vital-value { font-weight: bold; color: #555; margin-top: 0.25rem; }
+    .staff-info-box { background: #eaf6ff; border-left: 4px solid #2980b9; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.85rem; color: #2c3e50; }
+
+    /* Donation confirm */
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .detail-card { border: 1px solid #eee; border-radius: 6px; padding: 0.75rem; }
+    .detail-card .d-label { font-size: 0.7rem; color: #888; }
+    .detail-card .d-value { font-weight: bold; }
+    .success-box { background: #eafaf1; border: 1px solid #27ae60; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1rem; color: #27ae60; font-size: 0.9rem; }
+
+    /* Complete */
+    .complete-icon { font-size: 4rem; text-align: center; margin: 1rem 0; }
+    .summary-box { background: #fff8f8; border: 1px solid #eee; border-radius: 6px; padding: 1rem; }
+    .summary-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+    .summary-row:last-child { border: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="logo" href="../index.html">🩸 RedTrace</a>
+    <div>
+      <a href="policies.html">Help/Policies</a>
+      <a href="notifications.html">Notification</a>
+    </div>
+  </nav>
+
+  <div class="breadcrumb">❤️ Donate Now</div>
+
+  <!-- STEP INDICATOR -->
+  <div class="stepper">
+    <div class="step active" id="stp-1"><div class="step-line"></div><div class="step-circle">1</div><div class="step-label">Self-Assessment</div></div>
+    <div class="step" id="stp-2"><div class="step-line"></div><div class="step-circle">2</div><div class="step-label">Physical Screening</div></div>
+    <div class="step" id="stp-3"><div class="step-line"></div><div class="step-circle">3</div><div class="step-label">Confirm Donation</div></div>
+    <div class="step" id="stp-4"><div class="step-circle">4</div><div class="step-label">Complete</div></div>
+  </div>
+
+  <!-- ==================== PAGE 0: LOGIN / REGISTER ==================== -->
+  <div class="page active" id="page-auth">
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in to access your donor dashboard and track your donations.</p>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('signin')">Sign In</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <!-- ROLE SELECTOR -->
+    <div class="role-btns">
+      <button class="role-btn selected" id="role-donor" onclick="selectRole('donor')">❤️ Donor</button>
+      <button class="role-btn" id="role-staff" onclick="selectRole('staff')">🏥 Hospital Staff</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <div id="form-signin">
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="your.email@university.edu" />
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password" />
+      <div class="error-msg" id="login-error"></div>
+      <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+    </div>
+
+    <!-- REGISTER FORM (donor only) -->
+    <div id="form-register" style="display:none;">
+      <h2 style="margin-top:1rem;">Join Our Community</h2>
+      <p class="subtitle">Register as a blood donor and start saving lives today.</p>
+      <label>First Name *</label><input type="text" id="reg-first" placeholder="Enter your first name" />
+      <label>Last Name *</label><input type="text" id="reg-last" placeholder="Enter your last name" />
+      <label>Email *</label><input type="email" id="reg-email" placeholder="your.email@university.edu" />
+      <label>Phone Number *</label><input type="text" id="reg-phone" placeholder="+63 912 345 6789" />
+      <label>Password *</label><input type="password" id="reg-password" placeholder="Minimum 8 characters" />
+      <label>Confirm Password *</label><input type="password" id="reg-confirm" placeholder="Confirm your password" />
+      <div class="error-msg" id="reg-error"></div>
+      <button class="btn btn-primary" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 1: SELF-ASSESSMENT ==================== -->
+  <div class="page" id="page-assessment">
+    <h2>Self-Assessment Screening</h2>
+    <p class="subtitle">Please answer all questions honestly to determine your eligibility.</p>
+    <div id="assessment-questions">
+      <!-- Questions are rendered by JS below -->
+    </div>
+    <button class="btn btn-primary" onclick="submitAssessment()">Submit Assessment</button>
+  </div>
+
+  <!-- ==================== PAGE 2: PHYSICAL SCREENING ==================== -->
+  <div class="page" id="page-screening">
+    <h2>Physical Screening</h2>
+    <p class="subtitle">Hospital staff will check your vital signs.</p>
+    <div class="staff-info-box">
+      🏥 <strong>Staff Physical Examination</strong><br/>
+      A medical staff member will now perform a brief physical examination to check your vital signs and ensure you're ready to donate safely.
+    </div>
+    <h3 style="margin-bottom:0.75rem; font-size:0.95rem;">Vital Signs to be Checked</h3>
+    <div class="vital-grid">
+      <div class="vital-card"><div class="vital-label">❤️ BLOOD PRESSURE</div><div class="vital-value" id="vital-bp">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">💓 PULSE RATE</div><div class="vital-value" id="vital-pulse">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">🌡️ TEMPERATURE</div><div class="vital-value" id="vital-temp">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">⚖️ WEIGHT</div><div class="vital-value" id="vital-weight">Pending...</div></div>
+    </div>
+    <p style="color:#888; font-size:0.8rem; margin-top:1rem;">Waiting for staff to complete the screening and mark you as approved...</p>
+    <!-- Staff approval triggers page advance; polling Supabase for status change -->
+    <button class="btn btn-primary" style="margin-top:1rem;" onclick="checkApprovalStatus()">Check Approval Status</button>
+    <div id="screening-status-msg" style="margin-top:0.5rem; font-size:0.85rem; color:#888;"></div>
+  </div>
+
+  <!-- ==================== PAGE 3: CONFIRM DONATION ==================== -->
+  <div class="page" id="page-donation">
+    <h2>You're Ready to Donate!</h2>
+    <p class="subtitle">Please review and confirm your donation.</p>
+    <div class="success-box">✅ <strong>All Screenings Passed</strong> – You have passed both self-assessment and physical screening. You are cleared to donate blood.</div>
+    <h3 style="margin-bottom:0.75rem;">Donation Details</h3>
+    <div class="detail-grid">
+      <div class="detail-card"><div class="d-label">📅 DATE</div><div class="d-value" id="don-date">—</div></div>
+      <div class="detail-card"><div class="d-label">📍 LOCATION</div><div class="d-value">University Medical Center</div></div>
+      <div class="detail-card"><div class="d-label">🩸 DONATION TYPE</div><div class="d-value">Whole Blood</div></div>
+      <div class="detail-card"><div class="d-label">⏱️ DURATION</div><div class="d-value">~45 minutes</div></div>
+    </div>
+    <button class="btn btn-success" onclick="confirmDonation()">Confirm Donation</button>
+  </div>
+
+  <!-- ==================== PAGE 4: COMPLETE ==================== -->
+  <div class="page" id="page-complete">
+    <div class="complete-icon">💚</div>
+    <h2 style="text-align:center;">Thank You for Donating!</h2>
+    <p class="subtitle" style="text-align:center;">Your donation has been completed successfully. You're a hero – your blood will help save lives!</p>
+    <div class="summary-box">
+      <h3 style="margin-bottom:0.75rem; text-align:center;">🩸 Donation Summary</h3>
+      <div class="summary-row"><span>Date</span><strong id="sum-date">—</strong></div>
+      <div class="summary-row"><span>Location</span><strong>University Medical Center</strong></div>
+      <div class="summary-row"><span>Donor ID</span><strong id="sum-donorid">—</strong></div>
+      <div class="summary-row"><span>Status</span><strong style="color:#27ae60;">Completed ✅</strong></div>
+    </div>
+    <a href="../index.html" class="btn btn-primary" style="display:block; text-align:center; margin-top:1rem;">Back to Home</a>
+  </div>
+
+  <!-- ==================== ELIGIBILITY RESULT MODAL ==================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="result-modal">
+      <h3 id="modal-title">—</h3>
+      <p id="modal-body">—</p>
+      <button class="btn btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { AuthService } from "../js/auth-service.js";
+    import { DonorService } from "../js/donor-service.js";
+
+    // ---- State ----
+    let currentRole = "donor";
+    let currentStep = 0; // 0=auth, 1=assessment, 2=screening, 3=donation, 4=complete
+    let donorId = null;
+    let assessmentAnswers = {};
+
+    window.selectRole = (role) => {
+      currentRole = role;
+      document.getElementById("role-donor").classList.toggle("selected", role === "donor");
+      document.getElementById("role-staff").classList.toggle("selected", role === "staff");
+    };
+
+    window.switchTab = (tab) => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      event.target.classList.add("active");
+      document.getElementById("form-signin").style.display = tab === "signin" ? "block" : "none";
+      document.getElementById("form-register").style.display = tab === "register" ? "block" : "none";
+    };
+
+    // ---- AUTH ----
+    window.handleLogin = async () => {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const errEl = document.getElementById("login-error");
+      errEl.style.display = "none";
+
+      let result;
+      if (currentRole === "donor") {
+        result = await AuthService.loginDonor(email, password);
+        if (result.success) {
+          localStorage.setItem("userRole", "donor");
+          donorId = result.donor?.donor_id;
+          goToStep(1);
+        }
+      } else {
+        result = await AuthService.loginStaff(email, password);
+        if (result.success) {
+          localStorage.setItem("userRole", "staff");
+          window.location.href = "staff-dashboard.html";
+        }
+      }
+      if (!result.success) {
+        errEl.textContent = result.error;
+        errEl.style.display = "block";
+      }
+    };
+
+    window.handleRegister = async () => {
+      const errEl = document.getElementById("reg-error");
+      errEl.style.display = "none";
+      const pw = document.getElementById("reg-password").value;
+      const cpw = document.getElementById("reg-confirm").value;
+      if (pw !== cpw) { errEl.textContent = "Passwords do not match."; errEl.style.display = "block"; return; }
+      const result = await AuthService.registerDonor({
+        firstName: document.getElementById("reg-first").value,
+        lastName: document.getElementById("reg-last").value,
+        email: document.getElementById("reg-email").value,
+        phoneNumber: document.getElementById("reg-phone").value,
+        password: pw,
+      });
+      if (result.success) {
+        alert("Registration successful! Please check your email to verify, then sign in.");
+      } else {
+        errEl.textContent = result.error;
+        errEl.style.display = "block";
+      }
+    };
+
+    // ---- SELF ASSESSMENT ----
+    // ⚠️ TODO: Update these questions to match your actual questionnaire
+    const QUESTIONS = [
+      { key: "isSick", category: "General Health", text: "Are you feeling healthy and well today?" },
+      { key: "hadFever", category: "General Health", text: "Have you had any cold, flu, or fever in the past 14 days?" },
+      { key: "hadAntibiotics", category: "Medications", text: "Have you taken any antibiotics in the past 14 days?" },
+      { key: "hadSurgery", category: "Medical History", text: "Have you had any surgery in the past 6 months?" },
+      { key: "hadTattoo", category: "Medical History", text: "Have you had a tattoo or piercing in the past 12 months?" },
+    ];
+
+    function renderQuestions() {
+      const container = document.getElementById("assessment-questions");
+      container.innerHTML = QUESTIONS.map((q, i) => `
+        <div class="question-group">
+          <div class="category">${q.category}</div>
+          <div class="question-text">${i + 1}. ${q.text}</div>
+          <div class="yn-btns">
+            <button class="yn-btn" id="yn-yes-${i}" onclick="selectAnswer('${q.key}', true, ${i})">Yes</button>
+            <button class="yn-btn" id="yn-no-${i}" onclick="selectAnswer('${q.key}', false, ${i})">No</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    window.selectAnswer = (key, value, idx) => {
+      assessmentAnswers[key] = value;
+      document.getElementById(`yn-yes-${idx}`).className = "yn-btn" + (value ? " selected-yes" : "");
+      document.getElementById(`yn-no-${idx}`).className = "yn-btn" + (!value ? " selected-no" : "");
+    };
+
+    window.submitAssessment = async () => {
+      if (Object.keys(assessmentAnswers).length < QUESTIONS.length) {
+        alert("Please answer all questions before submitting.");
+        return;
+      }
+      const result = await DonorService.submitSelfAssessment(donorId, assessmentAnswers);
+      showModal(
+        result.isEligible,
+        result.isEligible
+          ? "You're Eligible! ✅"
+          : "Not Eligible at This Time ❌",
+        result.isEligible
+          ? "Congratulations! You passed the self-assessment. A staff member will conduct a physical screening next."
+          : "Based on your responses, you do not meet eligibility criteria at this time. Please consult with a staff member or visit the Help section for more information."
+      );
+    };
+
+    // ---- SCREENING ----
+    window.checkApprovalStatus = async () => {
+      // Polls Supabase for donor status change to "Approved"
+      const msg = document.getElementById("screening-status-msg");
+      msg.textContent = "Checking...";
+      const { data } = await DonorService.getProfile(/* userId */ null); // TODO: pass actual userId
+      // TODO: if data.status === "Approved", advance to step 3
+      msg.textContent = "Still waiting for staff approval...";
+    };
+
+    // ---- DONATION CONFIRM ----
+    window.confirmDonation = async () => {
+      const today = new Date().toLocaleDateString("en-PH", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      // TODO: call DonorService.confirmDonation(donorId, appointmentId)
+      document.getElementById("sum-date").textContent = today;
+      document.getElementById("sum-donorid").textContent = donorId || "D-???";
+      goToStep(4);
+    };
+
+    // ---- MODAL ----
+    window.showModal = (eligible, title, body) => {
+      const modal = document.getElementById("result-modal");
+      modal.className = "modal " + (eligible ? "eligible" : "not-eligible");
+      document.getElementById("modal-title").textContent = title;
+      document.getElementById("modal-body").textContent = body;
+      document.getElementById("modal-overlay").classList.add("open");
+    };
+    window.closeModal = () => {
+      document.getElementById("modal-overlay").classList.remove("open");
+      if (assessmentAnswers && Object.values(assessmentAnswers).every(v => v === false || v !== undefined)) {
+        // If eligible, advance to screening
+        // TODO: only advance if result.isEligible was true
+        goToStep(2);
+      }
+    };
+
+    // ---- NAVIGATION ----
+    function goToStep(step) {
+      currentStep = step;
+      const pages = ["page-auth", "page-assessment", "page-screening", "page-donation", "page-complete"];
+      pages.forEach((id, i) => document.getElementById(id).classList.toggle("active", i === step));
+
+      // Update stepper (steps 1-4 map to array index 1-4)
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`stp-${i}`);
+        el.classList.remove("active", "done");
+        if (i === step) el.classList.add("active");
+        else if (i < step) el.classList.add("done");
+      }
+
+      if (step === 1) {
+        renderQuestions();
+        document.getElementById("don-date").textContent = new Date().toLocaleDateString("en-PH", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      }
+    }
+
+    // Check if already logged in
+    (async () => {
+      const session = await AuthService.getSession();
+      if (session) {
+        localStorage.setItem("userRole", "donor");
+        // TODO: Fetch donorId from session
+        goToStep(1);
+      }
+    })();
+  </script>
+</body>
+</html>

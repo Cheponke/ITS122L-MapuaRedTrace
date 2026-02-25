@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedTrace — Login / Register</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div>
+      <a href="../index.html">Home</a>
+      <a href="policies.html">Help/Policies</a>
+      <a href="notifications.html">Notifications</a>
+    </div>
+  </nav>
+
+  <div class="login-container">
+    <p class="login-tagline">❤ Donate Now</p>
+    <h2 class="text-center">Welcome Back</h2>
+    <p class="login-subtitle">Sign in to access your dashboard and track your donations.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchFormTab('login')">Sign In</button>
+      <button class="tab-btn" onclick="switchFormTab('register')">Register</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="login-panel">
+      <label>Login As</label>
+      <div class="role-toggle">
+        <button class="role-btn active" id="role-donor" onclick="setRole('donor')">❤ Donor</button>
+        <button class="role-btn" id="role-staff" onclick="setRole('staff')">🏥 Hospital Staff</button>
+      </div>
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="your.email@university.edu" />
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password" />
+      <div class="error" id="login-error"></div>
+      <button class="btn btn-full" onclick="handleLogin()">Sign In</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-panel" class="hidden">
+      <label>First Name</label>
+      <input type="text" id="reg-firstname" placeholder="Enter your first name" />
+      <label>Last Name</label>
+      <input type="text" id="reg-lastname" placeholder="Enter your last name" />
+      <label>Email</label>
+      <input type="email" id="reg-email" placeholder="your.email@university.edu" />
+      <label>Phone Number</label>
+      <input type="tel" id="reg-phone" placeholder="+63 912 345 6789" />
+      <label>Password</label>
+      <input type="password" id="reg-password" placeholder="Minimum 8 characters" />
+      <label>Confirm Password</label>
+      <input type="password" id="reg-confirm" placeholder="Confirm your password" />
+      <div class="error" id="register-error"></div>
+      <button class="btn btn-full" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    let selectedRole = "donor";
+
+    function setRole(role) {
+      selectedRole = role;
+      document.getElementById("role-donor").classList.toggle("active", role === "donor");
+      document.getElementById("role-staff").classList.toggle("active", role === "staff");
+    }
+
+    function switchFormTab(tab) {
+      document.getElementById("login-panel").classList.toggle("hidden", tab !== "login");
+      document.getElementById("register-panel").classList.toggle("hidden", tab !== "register");
+      document.querySelectorAll(".tab-btn").forEach((btn, i) => {
+        btn.classList.toggle("active", (i === 0 && tab === "login") || (i === 1 && tab === "register"));
+      });
+    }
+
+    function handleLogin() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      if (!email || !password) { showError("login-error", "Please fill in all fields."); return; }
+      Auth.login(email, password, selectedRole);
+    }
+
+    function handleRegister() {
+      const password = document.getElementById("reg-password").value;
+      const confirm = document.getElementById("reg-confirm").value;
+      if (password !== confirm) { showError("register-error", "Passwords do not match."); return; }
+      Auth.register({
+        firstName: document.getElementById("reg-firstname").value.trim(),
+        lastName: document.getElementById("reg-lastname").value.trim(),
+        email: document.getElementById("reg-email").value.trim(),
+        phone: document.getElementById("reg-phone").value.trim(),
+        password,
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+/* ============================================================
+   MAPÚA REDTRACE — GLOBAL STYLESHEET
+   ============================================================ */
+
+/* 1. RESET & BASE */
+* { box-sizing: border-box; }
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fdf5f5;
+}
+
+/* 2. NAVBAR */
+nav {
+  background: #c0392b;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav a { color: white; text-decoration: none; margin-left: 1rem; }
+nav .nav-signout {
+  margin-left: 1rem;
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* 3. BUTTONS */
+.btn {
+  background: #c0392b;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1rem;
+}
+.btn:hover         { background: #a93226; }
+.btn-outline       { background: white; color: #c0392b; border: 2px solid #c0392b; }
+.btn-outline:hover { background: #fdf5f5; }
+.btn-green         { background: #27ae60; }
+.btn-gray          { background: #888; }
+.btn-orange        { background: #e67e22; }
+.btn-sm            { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+.btn-green:hover   { background: #219a52; }
+.btn-gray:hover    { background: #717171; }
+.btn-orange:hover  { background: #ca6f1e; }
+
+/* 4. FORMS */
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=tel],
+input[type=number],
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+textarea   { height: 100px; resize: vertical; }
+.error     { color: red; font-size: 0.85rem; display: none; margin-bottom: 0.5rem; }
+
+/* 5. LAYOUT HELPERS */
+.hidden       { display: none; }
+.container    { max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
+.dashboard    { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-gap     { display: flex; gap: 0.5rem; }
+.text-center  { text-align: center; }
+.text-muted   { color: #888; }
+.text-red     { color: #c0392b; }
+.text-green   { color: #27ae60; }
+.text-orange  { color: #e67e22; }
+.text-small   { font-size: 0.85rem; }
+.text-xs      { font-size: 0.8rem; }
+.mt-0         { margin-top: 0; }
+.mb-0         { margin-bottom: 0; }
+.mb-1         { margin-bottom: 1rem; }
+.mb-15        { margin-bottom: 1.5rem; }
+
+/* 6. CARDS */
+.panel,
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.stats-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.stat-card {
+  flex: 1;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.stat-card h2,
+.stat-card h3    { margin: 0 0 0.25rem; font-size: 1.75rem; }
+.stat-card.blue  { background: #e8f4fd; }
+.stat-card.green { background: #f0fff4; }
+.stat-card.yellow{ background: #fff8e1; }
+.stat-card.pink  { background: #fdf5f5; }
+
+/* 7. TABS */
+.tabs,
+.tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.tab-btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.tab-btn.active { background: #c0392b; color: white; }
+
+/* 8. TABLES */
+table           { width: 100%; border-collapse: collapse; }
+th, td          { text-align: left; padding: 0.75rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+th              { color: #888; font-size: 0.8rem; text-transform: uppercase; }
+
+/* 9. MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+.modal-box {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 420px;
+  max-width: 90vw;
+}
+
+/* 10. POPUP */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+.popup-box         { background: white; border-radius: 10px; padding: 2rem; max-width: 400px; text-align: center; }
+.popup-box h3      { color: #c0392b; }
+
+/* 11. HOME PAGE */
+.hero              { background: #f5f5f5; padding: 4rem 2rem; text-align: center; }
+.hero h1           { font-size: 2.5rem; }
+.home-stats        { display: flex; justify-content: center; gap: 2rem; padding: 2rem; }
+.home-stats .stat-card { padding: 1.5rem 2rem; text-align: center; border: 1px solid #ddd; }
+.home-stats .stat-card h2 { font-size: 2rem; color: #c0392b; margin: 0; }
+
+/* 12. LOGIN PAGE */
+.login-container {
+  max-width: 480px;
+  margin: 3rem auto;
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+.login-tabs          { display: flex; margin-bottom: 1.5rem; }
+.login-tabs .tab-btn { flex: 1; border-radius: 0; }
+.role-toggle         { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.role-btn {
+  flex: 1;
+  padding: 0.6rem;
+  border: 2px solid #c0392b;
+  background: white;
+  color: #c0392b;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.role-btn.active { background: #c0392b; color: white; }
+
+/* 13. DONOR DASHBOARD */
+.user-header {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.field-val { font-weight: bold; margin-bottom: 1rem; }
+.toolbar   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+
+/* 14. DONATION PROCESS */
+.progress { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+.step-indicator {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: #aaa;
+  position: relative;
+}
+.step-indicator.active    { color: #c0392b; font-weight: bold; }
+.step-indicator.completed { color: #27ae60; }
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ddd;
+  color: #888;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+.step-indicator.active .step-num    { background: #c0392b; color: white; }
+.step-indicator.completed .step-num { background: #27ae60; color: white; }
+.step-panel        { background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: none; }
+.step-panel.active { display: block; }
+
+.question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+.question span        { font-size: 0.9rem; }
+.yes-no               { display: flex; gap: 0.5rem; }
+.yes-no button        { padding: 0.4rem 0.9rem; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; }
+.yes-no button.selected-yes { background: #27ae60; color: white; border-color: #27ae60; }
+.yes-no button.selected-no  { background: #c0392b; color: white; border-color: #c0392b; }
+
+.info-box    { background: #e8f4fd; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+.success-box { background: #f0fff4; border: 1px solid #27ae60; border-radius: 10px; padding: 1.5rem; text-align: center; }
+.summary-box { background: #fff0f0; border-radius: 10px; padding: 1.5rem; text-align: left; margin: 1rem 0; }
+
+/* 15. NOTIFICATIONS */
+.filter-bar  { display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap; }
+.filter-btn  {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.filter-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
+
+.notification-item {
+  background: white;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border-left: 4px solid #ddd;
+}
+.notification-item.urgent   { border-left-color: #c0392b; }
+.notification-item.event    { border-left-color: #3498db; }
+.notification-item.reminder { border-left-color: #27ae60; }
+.notification-item.info     { border-left-color: #f39c12; }
+
+.notif-type          { display: inline-block; font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 10px; margin-bottom: 0.5rem; }
+.notif-type.urgent   { background: #fde; color: #c0392b; }
+.notif-type.event    { background: #e8f4fd; color: #3498db; }
+.notif-type.reminder { background: #f0fff4; color: #27ae60; }
+.notif-type.info     { background: #fef9e7; color: #f39c12; }
+
+/* 16. POLICIES / HELP */
+.faq-item         { border: 1px solid #eee; border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden; }
+.faq-question     { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; background: white; }
+.faq-question:hover { background: #fdf5f5; }
+.faq-answer       { padding: 0 1rem 1rem; color: #555; font-size: 0.95rem; display: none; }
+.faq-answer.open  { display: block; }
+.policy-section   { margin-bottom: 1.5rem; }
+.policy-section h4 { color: #c0392b; }
+.policy-section p  { color: #555; font-size: 0.9rem; line-height: 1.6; }
+
+/* 17. STAFF DASHBOARD */
+.header-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
