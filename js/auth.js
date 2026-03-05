@@ -38,35 +38,32 @@ const Auth = {
   // Called from: pages/login.html (Register tab)
   // Creates Supabase auth user + inserts into donors table
   // ----------------------------------------------------------
-  async register(formData) {
-    try {
-      const { data, error } = await supabaseClient.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      });
-      if (error) throw error;
+ async register(formData) {
+  try {
+    // Pass user details as metadata — the trigger will insert the donor row automatically
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          role: "donor",
+        }
+      }
+    });
+    if (error) throw error;
+    if (!data?.user?.id) throw new Error("No user ID returned.");
 
-      // Insert donor profile into donors table
-      const { error: insertError } = await supabaseClient
-        .from(TABLES.DONORS)
-        .insert([
-          {
-            user_id: data.user.id,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            contact_number: formData.phone,
-            // ADD MORE FIELDS HERE as needed from ERD
-          },
-        ]);
-      if (insertError) throw insertError;
+    alert("Registration successful! You can now log in.");
+    window.location.href = "login.html";
 
-      alert("Registration successful! Please check your email to verify.");
-      window.location.href = "login.html";
-    } catch (err) {
-      console.error("Register error:", err.message);
-      showError("register-error", err.message);
-    }
-  },
+  } catch (err) {
+    console.error("Register error:", err.message);
+    showError("register-error", err.message);
+  }
+},
 
   // ----------------------------------------------------------
   // LOGOUT

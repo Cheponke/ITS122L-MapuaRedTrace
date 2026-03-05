@@ -10,14 +10,26 @@ const Donor = {
   // Called from: donor-dashboard.html on load
   // ----------------------------------------------------------
   async getProfile(userId) {
-    const { data, error } = await supabaseClient
-      .from(TABLES.DONORS)
-      .select("*")
-      .eq("user_id", userId)
-      .single();
-    if (error) { console.error(error); return null; }
-    return data;
-  },
+  console.log("Fetching profile for userId:", userId);
+  
+  const { data, error } = await supabaseClient
+    .from("donors")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  console.log("Profile result — data:", data, "error:", error);
+
+  if (error) {
+    console.error("getProfile error:", error.message);
+    return null;
+  }
+  if (!data) {
+    console.warn("No donor row found for user_id:", userId);
+    return null;
+  }
+  return data;
+},
 
   // ----------------------------------------------------------
   // UPDATE DONOR PROFILE

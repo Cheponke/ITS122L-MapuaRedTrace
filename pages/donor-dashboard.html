@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedTrace — Donor Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
+
 <body>
 
   <nav>
@@ -56,11 +58,16 @@
       </div>
 
       <div id="view-mode">
-        <label class="field-label">First Name</label><div class="field-val" id="view-first-name">—</div>
-        <label class="field-label">Last Name</label><div class="field-val" id="view-last-name">—</div>
-        <label class="field-label">Email</label><div class="field-val" id="view-email">—</div>
-        <label class="field-label">Contact Number</label><div class="field-val" id="view-contact">—</div>
-        <label class="field-label">Address</label><div class="field-val" id="view-address">—</div>
+        <label class="field-label">First Name</label>
+        <div class="field-val" id="view-first-name">—</div>
+        <label class="field-label">Last Name</label>
+        <div class="field-val" id="view-last-name">—</div>
+        <label class="field-label">Email</label>
+        <div class="field-val" id="view-email">—</div>
+        <label class="field-label">Contact Number</label>
+        <div class="field-val" id="view-contact">—</div>
+        <label class="field-label">Address</label>
+        <div class="field-val" id="view-address">—</div>
       </div>
 
       <div id="edit-mode" class="hidden">
@@ -81,10 +88,17 @@
       <h3>Donation History</h3>
       <table>
         <thead>
-          <tr><th>Date</th><th>Status</th><th>Quantity</th><th>Blood Type</th></tr>
+          <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Quantity</th>
+            <th>Blood Type</th>
+          </tr>
         </thead>
         <tbody id="donation-history-tbody">
-          <tr><td colspan="4">Loading...</td></tr>
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -102,25 +116,48 @@
     async function init() {
       const session = await Auth.requireAuth();
       const userId = session.user.id;
+      console.log("Logged in userId:", userId);
+
       currentDonorProfile = await Donor.getProfile(userId);
-      if (!currentDonorProfile) { alert("Could not load donor profile."); return; }
 
-      document.getElementById("donor-name").textContent = `${currentDonorProfile.first_name} ${currentDonorProfile.last_name}`;
-      document.getElementById("donor-id").textContent = `Donor ID: ${currentDonorProfile.donor_id}`;
-      document.getElementById("donor-blood-type").textContent = currentDonorProfile.blood_type || "—";
-      document.getElementById("donor-status").textContent = currentDonorProfile.status || "Active";
-      document.getElementById("view-first-name").textContent = currentDonorProfile.first_name;
-      document.getElementById("view-last-name").textContent = currentDonorProfile.last_name;
-      document.getElementById("view-email").textContent = currentDonorProfile.email || "—";
-      document.getElementById("view-contact").textContent = currentDonorProfile.contact_number || "—";
-      document.getElementById("view-address").textContent = currentDonorProfile.address || "—";
-      document.getElementById("edit-first-name").value = currentDonorProfile.first_name || "";
-      document.getElementById("edit-last-name").value = currentDonorProfile.last_name || "";
-      document.getElementById("edit-email").value = currentDonorProfile.email || "";
-      document.getElementById("edit-contact").value = currentDonorProfile.contact_number || "";
-      document.getElementById("edit-address").value = currentDonorProfile.address || "";
+      if (!currentDonorProfile) {
+        document.getElementById("donor-name").textContent = "Profile not found";
+        document.getElementById("donor-id").textContent =
+          "Your profile could not be loaded. Please contact support or re-register.";
+        console.error("No profile found for:", userId);
+        return;
+      }
 
-      const history = await Donor.getDonationHistory(currentDonorProfile.donor_id);
+      document.getElementById("donor-name").textContent =
+        `${currentDonorProfile.first_name} ${currentDonorProfile.last_name}`;
+      document.getElementById("donor-id").textContent =
+        `Donor ID: ${currentDonorProfile.donor_id || "Not assigned"}`;
+      document.getElementById("donor-blood-type").textContent =
+        currentDonorProfile.blood_type || "—";
+      document.getElementById("donor-status").textContent =
+        currentDonorProfile.status || "Active";
+      document.getElementById("view-first-name").textContent =
+        currentDonorProfile.first_name || "—";
+      document.getElementById("view-last-name").textContent =
+        currentDonorProfile.last_name || "—";
+      document.getElementById("view-email").textContent =
+        currentDonorProfile.email || "—";
+      document.getElementById("view-contact").textContent =
+        currentDonorProfile.contact_number || "—";
+      document.getElementById("view-address").textContent =
+        currentDonorProfile.address || "—";
+      document.getElementById("edit-first-name").value =
+        currentDonorProfile.first_name || "";
+      document.getElementById("edit-last-name").value =
+        currentDonorProfile.last_name || "";
+      document.getElementById("edit-email").value =
+        currentDonorProfile.email || "";
+      document.getElementById("edit-contact").value =
+        currentDonorProfile.contact_number || "";
+      document.getElementById("edit-address").value =
+        currentDonorProfile.address || "";
+
+      const history = await Donor.getDonationHistory(currentDonorProfile.id);
       Donor.renderDonationHistory(history);
       document.getElementById("stat-total-donations").textContent = history.length;
     }
@@ -152,4 +189,5 @@
     init();
   </script>
 </body>
+
 </html>
