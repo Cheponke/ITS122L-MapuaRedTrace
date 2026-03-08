@@ -5,58 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedTrace — Staff Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace — Staff Portal</strong></div>
-    <div>
+    <div class="nav-logo"><strong>🩸 Mapúa RedTrace — Staff Portal</strong></div>
+    <div class="nav-links">
       <a href="../index.html">Home</a>
       <a href="notifications.html">Notifications</a>
-      <button class="nav-signout-btn" onclick="Auth.logout()">Sign Out</button>
     </div>
   </nav>
 
   <div class="dashboard">
 
-    <div class="header-card">
-      <div>
-        <h2>Staff Dashboard</h2>
-        <p>Hospital Staff Portal</p>
+    <div class="user-header">
+      <div class="user-profile-left">
+        <div class="profile-avatar-large icon-light-red">🏥</div>
+        <div class="user-info">
+          <h2>Staff Dashboard</h2>
+          <p class="donor-id">Hospital Staff Portal</p>
+        </div>
       </div>
+      <button class="sign-out-badge" onclick="Auth.logout()">↩ Sign Out</button>
     </div>
 
     <div class="stats-row">
       <div class="stat-card">
-        <h3 id="stat-total">—</h3>
-        <p>Total Donors</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-blue">👥</div>
+          <h3 id="stat-total">0</h3>
+        </div>
+        <div class="stat-label">Total Donors</div>
+        <div class="sub-text">All registered donors</div>
       </div>
+
       <div class="stat-card">
-        <h3 id="stat-pending" class="text-orange">—</h3>
-        <p>Pending Approval</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-yellow">🕒</div>
+          <h3 id="stat-pending">0</h3>
+        </div>
+        <div class="stat-label">Pending Approval</div>
+        <div class="sub-text">Awaiting review</div>
       </div>
+
       <div class="stat-card">
-        <h3 id="stat-active" class="text-green">—</h3>
-        <p>Active Donors</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-green">✅</div>
+          <h3 id="stat-active">0</h3>
+        </div>
+        <div class="stat-label">Active Donors</div>
+        <div class="sub-text">Approved and active</div>
       </div>
+
       <div class="stat-card">
-        <h3 id="stat-inactive" class="text-muted">—</h3>
-        <p>Inactive Donors</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-grey">✖️</div>
+          <h3 id="stat-inactive">0</h3>
+        </div>
+        <div class="stat-label">Inactive Donors</div>
+        <div class="sub-text">Not currently active</div>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="showPanel('donors-panel', this)">Manage Donors</button>
-      <button class="tab-btn" onclick="showPanel('inventory-panel', this)">Manage Inventory</button>
+      <button class="tab-btn active" onclick="showPanel('donors-panel', this)">🅰 Manage Donors</button>
+      <button class="tab-btn" onclick="showPanel('inventory-panel', this)">📦 Manage Inventory</button>
     </div>
 
-    <!-- MANAGE DONORS -->
     <div id="donors-panel" class="panel">
-      <div class="toolbar">
+      <div class="panel-header" style="border-bottom: none; margin-bottom: 1rem;">
         <h3>Donor Management</h3>
-        <div class="toolbar-actions">
-          <input type="text" id="search-donors" placeholder="Search donors..." oninput="searchDonors()" />
-          <select id="filter-status" onchange="searchDonors()">
+        <div class="toolbar-actions" style="display: flex; gap: 10px;">
+          <input type="text" id="search-donors" placeholder="🔍 Search donors..." oninput="searchDonors()" style="padding: 0.6rem; width: 250px;" />
+          <select id="filter-status" onchange="searchDonors()" style="padding: 0.6rem; width: 150px;">
             <option value="">All Status</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
@@ -64,23 +86,33 @@
           </select>
         </div>
       </div>
-      <table>
-        <thead>
-          <tr><th>Donor ID</th><th>Name</th><th>Email</th><th>Blood Type</th><th>Status</th><th>Registered</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="donors-tbody">
-          <tr><td colspan="7">Loading donors...</td></tr>
-        </tbody>
-      </table>
+
+      <div class="table-container" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>DONOR ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>BLOOD TYPE</th>
+              <th>STATUS</th>
+              <th>REGISTRATION</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="donors-tbody">
+            <tr><td colspan="7" class="text-center">Loading donors...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- MANAGE INVENTORY -->
     <div id="inventory-panel" class="panel hidden">
-      <div class="toolbar">
+      <div class="panel-header" style="border-bottom: none; margin-bottom: 1rem;">
         <h3>Blood Inventory Management</h3>
-        <div class="toolbar-actions">
-          <input type="text" id="search-inventory" placeholder="Search inventory..." oninput="searchInventory()" />
-          <select id="filter-blood-type" onchange="searchInventory()">
+        <div class="toolbar-actions" style="display: flex; gap: 10px;">
+          <input type="text" id="search-inventory" placeholder="🔍 Search inventory..." oninput="searchInventory()" style="padding: 0.6rem; width: 250px;" />
+          <select id="filter-blood-type" onchange="searchInventory()" style="padding: 0.6rem; width: 150px;">
             <option value="">All Types</option>
             <option>A+</option><option>A-</option>
             <option>B+</option><option>B-</option>
@@ -90,45 +122,67 @@
         </div>
       </div>
 
-      <div class="stats-row" style="margin-bottom:1.5rem;">
-        <div class="stat-card inv-card-blue"><h3 id="inv-total">—</h3><p>Total Units</p></div>
-        <div class="stat-card inv-card-green"><h3 id="inv-available">—</h3><p>Available</p></div>
-        <div class="stat-card inv-card-yellow"><h3 id="inv-reserved">—</h3><p>Reserved</p></div>
-        <div class="stat-card inv-card-red"><h3 id="inv-expired">—</h3><p>Expired</p></div>
+      <div class="table-container" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>BLOOD TYPE</th>
+              <th>QUANTITY (ML)</th>
+              <th>EXPIRATION</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-tbody">
+            <tr><td colspan="6" class="text-center">Loading inventory...</td></tr>
+          </tbody>
+        </table>
       </div>
-
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Blood Type</th><th>Quantity (mL)</th><th>Expiration</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody id="inventory-tbody">
-          <tr><td colspan="6">Loading inventory...</td></tr>
-        </tbody>
-      </table>
     </div>
 
   </div>
 
-  <!-- EDIT DONOR MODAL -->
   <div class="modal-overlay" id="edit-modal">
-    <div class="modal-box">
-      <h3>Edit Donor Record</h3>
+    <div class="modal-box" style="border-radius: 16px; padding: 2.5rem;">
+      <h3 style="margin-bottom: 1.5rem; color: var(--primary-red);">Edit Donor Record</h3>
       <input type="hidden" id="modal-donor-id" />
-      <label>First Name</label><input type="text" id="modal-first-name" />
-      <label>Last Name</label><input type="text" id="modal-last-name" />
-      <label>Email</label><input type="email" id="modal-email" />
-      <label>Blood Type</label>
-      <select id="modal-blood-type">
-        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-        <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-      </select>
-      <label>Status</label>
-      <select id="modal-status">
-        <option>Active</option><option>Inactive</option><option>Pending</option>
-      </select>
-      <div class="modal-actions">
-        <button class="btn" onclick="saveEditModal()">Save</button>
-        <button class="btn btn-gray" onclick="closeModal()">Cancel</button>
+      
+      <div class="grid-row-2">
+        <div class="input-group">
+          <label class="field-label">FIRST NAME</label>
+          <input type="text" id="modal-first-name" />
+        </div>
+        <div class="input-group">
+          <label class="field-label">LAST NAME</label>
+          <input type="text" id="modal-last-name" />
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-top: 1rem;">
+        <label class="field-label">EMAIL</label>
+        <input type="email" id="modal-email" />
+      </div>
+
+      <div class="grid-row-2" style="margin-top: 1rem;">
+        <div class="input-group">
+          <label class="field-label">BLOOD TYPE</label>
+          <select id="modal-blood-type">
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="field-label">STATUS</label>
+          <select id="modal-status">
+            <option>Active</option><option>Inactive</option><option>Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 10px;">
+        <button class="btn-edit-main" onclick="saveEditModal()" style="flex: 1;">Save Changes</button>
+        <button class="btn-edit-main" style="background:#888; flex: 1;" onclick="closeModal()">Cancel</button>
       </div>
     </div>
   </div>
@@ -160,10 +214,6 @@
     async function loadInventory() {
       allInventory = await Staff.getInventory();
       Staff.renderInventoryTable(allInventory);
-      document.getElementById("inv-total").textContent = allInventory.length;
-      document.getElementById("inv-available").textContent = allInventory.filter(i => i.inventory_status === "Available").length;
-      document.getElementById("inv-reserved").textContent = allInventory.filter(i => i.inventory_status === "Reserved").length;
-      document.getElementById("inv-expired").textContent = allInventory.filter(i => i.inventory_status === "Expired").length;
     }
 
     function searchDonors() {

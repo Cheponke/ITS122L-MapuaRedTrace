@@ -9,7 +9,7 @@
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div class="nav-logo"><strong>🩸 Mapua RedTrace</strong></div>
     <div>
       <a href="../index.html">Home</a>
       <a href="policies.html">Help/Policies</a>
@@ -18,7 +18,7 @@
   </nav>
 
   <div class="login-container">
-    <p class="login-tagline">❤ Donate Now</p>
+    <p class="login-tagline">❤️ Donate Now</p>
     <h2 class="text-center">Welcome Back</h2>
     <p class="login-subtitle">Sign in to access your dashboard and track your donations.</p>
 
@@ -114,5 +114,15 @@
     });
   }
   </script>
+  <script>
+  window.addEventListener('scroll', function() {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+</script>
 </body>
 </html>

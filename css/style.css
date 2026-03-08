@@ -2,37 +2,86 @@
    MAPÚA REDTRACE — GLOBAL STYLESHEET
    ============================================================ */
 
-/* 1. RESET & BASE */
+/* RESET & BASE */
+:root {
+  --primary-red: #c61a1a;
+  --bg-soft: #fdf8f8;
+  --text-dark: #1a1a1a;
+  --text-grey: #888888;
+  --white: #ffffff;
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
 * { box-sizing: border-box; }
 
 body {
-  font-family: sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
   margin: 0;
   padding: 0;
-  background: #fdf5f5;
+  background: var(--bg-soft); 
+  color: var(--text-dark);
 }
 
-/* 2. NAVBAR */
+/* NAVBAR */
 nav {
-  background: #c0392b;
-  color: white;
-  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-nav a { color: white; text-decoration: none; margin-left: 1rem; }
-nav .nav-signout {
-  margin-left: 1rem;
-  background: transparent;
-  border: 1px solid white;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  border-radius: 4px;
+  padding: 0.8rem 5%;
+  color: #333;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 3. BUTTONS */
+nav.scrolled {
+  padding: 1.4rem 5%;
+  background: #ffffff;
+  border-bottom: 2px solid #dedede;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.nav-logo { 
+  color: var(--primary-red); 
+  font-size: 1.4rem; 
+  font-weight: 800;
+  transition: transform 0.4s ease;
+}
+
+nav.scrolled .nav-logo { transform: scale(1.05); }
+
+nav a { 
+  color: #333; 
+  text-decoration: none; 
+  margin-left: 1.5rem; 
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover { color: #616161; }
+
+.btn-donate {
+  background: var(--primary-red);
+  color: white !important;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.nav-signout-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* BUTTONS */
 .btn {
   background: #c0392b;
   color: white;
@@ -44,240 +93,307 @@ nav .nav-signout {
   display: inline-block;
   font-size: 1rem;
 }
-.btn:hover         { background: #a93226; }
-.btn-outline       { background: white; color: #c0392b; border: 2px solid #c0392b; }
-.btn-outline:hover { background: #fdf5f5; }
-.btn-green         { background: #27ae60; }
-.btn-gray          { background: #888; }
-.btn-orange        { background: #e67e22; }
-.btn-sm            { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
-.btn-green:hover   { background: #219a52; }
-.btn-gray:hover    { background: #717171; }
-.btn-orange:hover  { background: #ca6f1e; }
+.btn:hover { background: #a93226; }
+.btn-outline { background: white; color: #c0392b; border: 2px solid #c0392b; }
+.btn-green { background: #27ae60; }
+.btn-gray { background: #888; }
+.btn-edit-main {
+  background: var(--primary-red);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-/* 4. FORMS */
+/* FORMS */
 label {
   display: block;
-  margin-bottom: 0.25rem;
-  font-weight: bold;
+  text-align: left;    
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
   font-size: 0.9rem;
+  color: #333;
 }
-input[type=text],
-input[type=email],
-input[type=password],
-input[type=tel],
-input[type=number],
-select,
-textarea {
+
+input[type=text], input[type=email], input[type=password], input[type=tel], select {
   width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-  box-sizing: border-box;
-  font-size: 1rem;
-}
-textarea   { height: 100px; resize: vertical; }
-.error     { color: red; font-size: 0.85rem; display: none; margin-bottom: 0.5rem; }
-
-/* 5. LAYOUT HELPERS */
-.hidden       { display: none; }
-.container    { max-width: 700px; margin: 2rem auto; padding: 0 1rem; }
-.dashboard    { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-.flex-between { display: flex; justify-content: space-between; align-items: center; }
-.flex-gap     { display: flex; gap: 0.5rem; }
-.text-center  { text-align: center; }
-.text-muted   { color: #888; }
-.text-red     { color: #c0392b; }
-.text-green   { color: #27ae60; }
-.text-orange  { color: #e67e22; }
-.text-small   { font-size: 0.85rem; }
-.text-xs      { font-size: 0.8rem; }
-.mt-0         { margin-top: 0; }
-.mb-0         { margin-bottom: 0; }
-.mb-1         { margin-bottom: 1rem; }
-.mb-15        { margin-bottom: 1.5rem; }
-
-/* 6. CARDS */
-.panel,
-.card {
-  background: white;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-.stats-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.stat-card {
-  flex: 1;
-  background: white;
-  border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border: none; 
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background-color: #eef4ff; 
+  font-size: 0.95rem;
+  color: #333;
 }
-.stat-card h2,
-.stat-card h3    { margin: 0 0 0.25rem; font-size: 1.75rem; }
-.stat-card.blue  { background: #e8f4fd; }
-.stat-card.green { background: #f0fff4; }
-.stat-card.yellow{ background: #fff8e1; }
-.stat-card.pink  { background: #fdf5f5; }
 
-/* 7. TABS */
-.tabs,
-.tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+input:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(198, 26, 26, 0.2);
+}
+
+/* LAYOUT HELPERS */
+.hidden { display: none; }
+.dashboard { max-width: 1100px; margin: 2rem auto; padding: 0 2rem; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+/* CARDS & PANELS */
+.panel {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: 2rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 1rem;
+}
+
+/* TABS */
+.tabs { display: flex; gap: 1rem; margin-bottom: 2rem; }
 .tab-btn {
-  padding: 0.6rem 1.5rem;
+  background: white;
+  padding: 0.8rem 1.8rem;
   border: none;
-  background: #f0f0f0;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  box-shadow: var(--shadow-subtle);
+  transition: 0.2s;
 }
-.tab-btn.active { background: #c0392b; color: white; }
+.tab-btn.active { background: var(--primary-red); color: white; }
 
-/* 8. TABLES */
-table           { width: 100%; border-collapse: collapse; }
-th, td          { text-align: left; padding: 0.75rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-th              { color: #888; font-size: 0.8rem; text-transform: uppercase; }
+/* TABLES */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 1rem; border-bottom: 1px solid #f8f8f8; font-size: 0.9rem; }
+th { color: #aaa; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05rem; }
 
-/* 9. MODAL */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
-  justify-content: center;
-  align-items: center;
-}
-.modal-box {
-  background: white;
-  border-radius: 10px;
-  padding: 2rem;
-  width: 420px;
-  max-width: 90vw;
-}
-
-/* 10. POPUP */
-.popup-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
-  justify-content: center;
-  align-items: center;
-}
-.popup-box         { background: white; border-radius: 10px; padding: 2rem; max-width: 400px; text-align: center; }
-.popup-box h3      { color: #c0392b; }
-
-/* 11. HOME PAGE */
-.hero              { background: #f5f5f5; padding: 4rem 2rem; text-align: center; }
-.hero h1           { font-size: 2.5rem; }
-.home-stats        { display: flex; justify-content: center; gap: 2rem; padding: 2rem; }
-.home-stats .stat-card { padding: 1.5rem 2rem; text-align: center; border: 1px solid #ddd; }
-.home-stats .stat-card h2 { font-size: 2rem; color: #c0392b; margin: 0; }
-
-/* 12. LOGIN PAGE */
-.login-container {
-  max-width: 480px;
-  margin: 3rem auto;
-  background: white;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-}
-.login-tabs          { display: flex; margin-bottom: 1.5rem; }
-.login-tabs .tab-btn { flex: 1; border-radius: 0; }
-.role-toggle         { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.role-btn {
-  flex: 1;
-  padding: 0.6rem;
-  border: 2px solid #c0392b;
-  background: white;
-  color: #c0392b;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-.role-btn.active { background: #c0392b; color: white; }
-
-/* 13. DONOR DASHBOARD */
-.user-header {
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
+/* --- HOME PAGE (HERO SECTION) --- */
+.hero {
+  background: linear-gradient(to bottom, #fffafa, #fdf8f8);
+  padding: 8rem 2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-.field-val { font-weight: bold; margin-bottom: 1rem; }
-.toolbar   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-
-/* 14. DONATION PROCESS */
-.progress { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-.step-indicator {
-  flex: 1;
   text-align: center;
-  padding: 0.5rem;
-  font-size: 0.85rem;
-  color: #aaa;
-  position: relative;
 }
-.step-indicator.active    { color: #c0392b; font-weight: bold; }
-.step-indicator.completed { color: #27ae60; }
-.step-num {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #ddd;
-  color: #888;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.25rem;
-  font-weight: bold;
-}
-.step-indicator.active .step-num    { background: #c0392b; color: white; }
-.step-indicator.completed .step-num { background: #27ae60; color: white; }
-.step-panel        { background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: none; }
-.step-panel.active { display: block; }
 
-.question {
+.hero-content {
+  max-width: 800px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: #666;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.hero-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  border: 1px solid #eee;
-  border-radius: 6px;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+/* Custom button for the hero outline */
+.btn-outline-red {
+  background: white;
+  color: var(--primary-red);
+  padding: 0.75rem 2rem;
+  border: 2px solid var(--primary-red);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.btn-outline-red:hover {
+  background: #fff5f5;
+}
+
+/* --- HOME PAGE (STATS SECTION) --- */
+.stats-home {
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.stats-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 3rem; /* Spacing between cards */
+}
+
+.stat-card-home {
+  text-align: center;
+  flex: 1;
+  padding: 2rem;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card-home:hover {
+  transform: translateY(-5-px);
+}
+
+.stat-card-home h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary-red);
   margin-bottom: 0.5rem;
 }
-.question span        { font-size: 0.9rem; }
-.yes-no               { display: flex; gap: 0.5rem; }
-.yes-no button        { padding: 0.4rem 0.9rem; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; }
-.yes-no button.selected-yes { background: #27ae60; color: white; border-color: #27ae60; }
-.yes-no button.selected-no  { background: #c0392b; color: white; border-color: #c0392b; }
 
-.info-box    { background: #e8f4fd; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
-.success-box { background: #f0fff4; border: 1px solid #27ae60; border-radius: 10px; padding: 1.5rem; text-align: center; }
-.summary-box { background: #fff0f0; border-radius: 10px; padding: 1.5rem; text-align: left; margin: 1rem 0; }
-
-/* 15. NOTIFICATIONS */
-.filter-bar  { display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap; }
-.filter-btn  {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.85rem;
+.stat-card-home p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
 }
-.filter-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* LOGIN PAGE */
+.login-container { max-width: 600px; margin: 2rem auto; text-align: center; }
+.login-card { background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); overflow: hidden; text-align: left; }
+.btn-login-main { width: 100%; background: #c61a1a; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+/* NEW DONOR DASHBOARD STYLES */
+/* Header Section */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.user-profile-left { display: flex; align-items: center; gap: 1.5rem; }
+
+.profile-avatar-large {
+  width: 70px; height: 70px;
+  background: #ffebeb; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+}
+
+.user-info h2 { font-size: 2.2rem; margin: 0; font-weight: 800; color: #111; }
+.donor-id { color: var(--text-grey); margin-top: 2px; font-weight: 500; }
+
+.sign-out-badge {
+  background: #f1f3f5;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+}
+
+/* Stat Cards */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  flex: none; /* Override old flex */
+  background: white;
+  padding: 1.5rem;
+  border-radius: 14px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.stat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+
+.stat-icon-bg {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+
+/* Specific icon colors from design */
+.icon-light-red { background: #fff0f0; color: #e22d2d; }
+.icon-light-pink { background: #fff0f5; color: #ff4d6d; }
+.icon-light-green { background: #f0fff4; color: #27ae60; }
+
+.stat-card h3 { font-size: 2.4rem; font-weight: 800; margin: 0; }
+.stat-label { font-weight: 600; color: #444; margin-bottom: 0.2rem; }
+.sub-text { font-size: 0.8rem; color: var(--text-grey); }
+
+.status-badge-green {
+  background: #e6fffa;
+  color: #2e7d32;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+/* Information Grid */
+.info-section { margin-bottom: 2.5rem; }
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-red);
+  margin-bottom: 1.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.field-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #aaa;
+  letter-spacing: 0.08rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.field-val {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0; /* Clear previous margin */
+}
+
+/* DONATION PROCESS & NOTIFICATIONS (Preserved) */
+.progress { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+.step-indicator { flex: 1; text-align: center; padding: 0.5rem; font-size: 0.85rem; color: #aaa; }
+.step-indicator.active { color: #c0392b; font-weight: bold; }
 
 .notification-item {
   background: white;
@@ -287,35 +403,59 @@ th              { color: #888; font-size: 0.8rem; text-transform: uppercase; }
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   border-left: 4px solid #ddd;
 }
-.notification-item.urgent   { border-left-color: #c0392b; }
-.notification-item.event    { border-left-color: #3498db; }
-.notification-item.reminder { border-left-color: #27ae60; }
-.notification-item.info     { border-left-color: #f39c12; }
 
-.notif-type          { display: inline-block; font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 10px; margin-bottom: 0.5rem; }
-.notif-type.urgent   { background: #fde; color: #c0392b; }
-.notif-type.event    { background: #e8f4fd; color: #3498db; }
-.notif-type.reminder { background: #f0fff4; color: #27ae60; }
-.notif-type.info     { background: #fef9e7; color: #f39c12; }
-
-/* 16. POLICIES / HELP */
-.faq-item         { border: 1px solid #eee; border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden; }
-.faq-question     { padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; background: white; }
-.faq-question:hover { background: #fdf5f5; }
-.faq-answer       { padding: 0 1rem 1rem; color: #555; font-size: 0.95rem; display: none; }
-.faq-answer.open  { display: block; }
-.policy-section   { margin-bottom: 1.5rem; }
-.policy-section h4 { color: #c0392b; }
-.policy-section p  { color: #555; font-size: 0.9rem; line-height: 1.6; }
-
-/* 17. STAFF DASHBOARD */
-.header-card {
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
+/* --- Long Role Selection Buttons --- */
+.role-toggle {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%; /* Ensures the toggle container spans the full width */
 }
+
+.role-btn {
+  flex: 1; /* Forces both buttons to grow and take up equal horizontal space */
+  padding: 1.2rem;
+  background: var(--white);
+  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row; /* Changed to row to keep them sleek while long */
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+/* Hover State */
+.role-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-red);
+  box-shadow: 0 5px 15px rgba(198, 26, 26, 0.08);
+}
+
+/* Active State */
+.role-btn.active {
+  border: 2px solid var(--primary-red);
+  background: #fffafa;
+  box-shadow: 0 8px 25px rgba(198, 26, 26, 0.12);
+}
+
+.role-icon {
+  font-size: 1.4rem;
+}
+
+.role-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.role-btn.active .role-text {
+  color: var(--primary-red);
+}
+
+

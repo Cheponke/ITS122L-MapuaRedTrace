@@ -5,40 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapúa RedTrace — Home</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
-    <div>
+    <div class="nav-logo"><strong>🩸 Mapúa RedTrace</strong></div>
+    <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="pages/policies.html">Help/Policies</a>
       <a href="pages/notifications.html">Notifications</a>
-      <a href="pages/login.html" class="btn">Donate Now</a>
+      <a href="pages/login.html" class="btn-donate">Donate Now</a>
     </div>
   </nav>
 
   <section class="hero">
-    <h1>Save Lives with <span class="text-red">Red Trace</span></h1>
-    <p>A comprehensive blood donation management system for the Mapúa University community.</p>
-    <div class="hero-actions">
-      <a href="pages/login.html" class="btn">Donate Now</a>
-      <a href="pages/donor-dashboard.html" class="btn btn-outline">View Dashboard</a>
+    <div class="hero-content">
+      <h1>Save Lives with <span class="text-red">Red Trace</span></h1>
+      <p>A comprehensive blood donation management system for the Mapúa University community.</p>
+      <div class="hero-actions">
+        <a href="pages/donate.html" class="btn">Donate Now</a>
+        <a href="pages/donor-dashboard.html" class="btn-outline-red">View Dashboard</a>
+      </div>
     </div>
   </section>
 
-  <section class="stats">
-    <div class="stat-card">
-      <h2 id="stat-donors">—</h2>
-      <p>Registered Donors</p>
-    </div>
-    <div class="stat-card">
-      <h2 id="stat-donations">—</h2>
-      <p>Total Donations</p>
-    </div>
-    <div class="stat-card">
-      <h2 id="stat-lives">—</h2>
-      <p>Lives Impacted</p>
+  <section class="stats-home">
+    <div class="stats-container">
+      <div class="stat-card-home">
+        <h2 id="stat-donors">0</h2>
+        <p>Registered Donors</p>
+      </div>
+      <div class="stat-card-home">
+        <h2 id="stat-donations">0</h2>
+        <p>Total Donations</p>
+      </div>
+      <div class="stat-card-home">
+        <h2 id="stat-lives">0</h2>
+        <p>Lives Impacted</p>
+      </div>
     </div>
   </section>
 
@@ -47,14 +52,33 @@
   <script src="js/utils.js"></script>
   <script>
     async function loadStats() {
-      const { count: donorCount } = await supabaseClient
-        .from(TABLES.DONORS).select("*", { count: "exact", head: true });
-      const { count: donationCount } = await supabaseClient
-        .from(TABLES.DONATION_PROCESS).select("*", { count: "exact", head: true });
-      document.getElementById("stat-donors").textContent = donorCount ?? "—";
-      document.getElementById("stat-donations").textContent = donationCount ?? "—";
-      document.getElementById("stat-lives").textContent = donationCount ? donationCount * 3 : "—";
+      try {
+        // Fetch Donor Count using your project's table constants
+        const { count: donorCount } = await supabaseClient
+          .from(TABLES.DONORS)
+          .select("*", { count: "exact", head: true });
+
+        // Fetch Donation Count
+        const { count: donationCount } = await supabaseClient
+          .from(TABLES.DONATION_PROCESS)
+          .select("*", { count: "exact", head: true });
+
+        // Update UI
+        document.getElementById("stat-donors").textContent = donorCount ?? "0";
+        document.getElementById("stat-donations").textContent = donationCount ?? "0";
+        
+        // Impact calculation: One donation can save up to 3 lives
+        document.getElementById("stat-lives").textContent = donationCount ? (donationCount * 3) : "0";
+      } catch (error) {
+        console.error("Error loading stats:", error);
+        // Fallback to 0 if there's an error
+        document.getElementById("stat-donors").textContent = "0";
+        document.getElementById("stat-donations").textContent = "0";
+        document.getElementById("stat-lives").textContent = "0";
+      }
     }
+
+    // Initialize stats on load
     loadStats();
   </script>
 </body>

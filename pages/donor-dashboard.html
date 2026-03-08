@@ -1,89 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedTrace — Donor Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
   <nav>
     <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
-    <div>
+    <div class="nav-links">
       <a href="../index.html">Home</a>
       <a href="policies.html">Help/Policies</a>
-      <a href="notifications.html">Notifications</a>
-      <a href="donation-process.html" class="btn">Donate Now</a>
-      <button class="nav-signout-btn" onclick="Auth.logout()">Sign Out</button>
+      <a href="notifications.html">Notification</a>
+      <a href="donation-process.html" class="btn-donate">Donate Now</a>
+      <button class="nav-signout-btn" onclick="Auth.logout()">👤</button>
     </div>
   </nav>
 
   <div class="dashboard">
 
     <div class="user-header">
-      <div>
-        <h2 id="donor-name">Loading...</h2>
-        <p class="donor-id" id="donor-id"></p>
+      <div class="user-profile-left">
+        <div class="profile-avatar-large">👤</div>
+        <div class="user-info">
+          <h2 id="donor-name">Loading...</h2>
+          <p class="donor-id" id="donor-id">Donor ID: ---</p>
+        </div>
       </div>
+      <button class="sign-out-badge" onclick="Auth.logout()">↩ Sign Out</button>
     </div>
 
     <div class="stats-row">
       <div class="stat-card">
-        <h3 id="stat-total-donations">—</h3>
-        <p>Total Donations</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-red">💧</div>
+          <h3 id="stat-total-donations">0</h3>
+        </div>
+        <div class="stat-label">Total Donations</div>
+        <div class="sub-text" id="stat-lives-saved">You've saved 0 lives</div>
       </div>
+
       <div class="stat-card">
-        <h3 id="donor-blood-type">—</h3>
-        <p>Blood Type</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-pink">❤️</div>
+          <h3 id="donor-blood-type">—</h3>
+        </div>
+        <div class="stat-label">Blood Type</div>
+        <div class="sub-text">Universal donor type</div>
       </div>
+
       <div class="stat-card">
-        <h3 id="donor-status">—</h3>
-        <p>Donor Status</p>
+        <div class="stat-top">
+          <div class="stat-icon-bg icon-light-green">🛡️</div>
+          <span class="status-badge-green" id="donor-status">Active</span>
+        </div>
+        <div class="stat-label">Donor Status</div>
+        <div class="sub-text">Eligible to donate</div>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('profile-panel', 'history-panel')">My Profile</button>
-      <button class="tab-btn" onclick="switchTab('history-panel', 'profile-panel')">Donation History</button>
+      <button class="tab-btn active" id="tab-profile" onclick="switchTab('profile-panel', 'history-panel', this)">My Profile</button>
+      <button class="tab-btn" id="tab-history" onclick="switchTab('history-panel', 'profile-panel', this)">Donation History</button>
     </div>
 
-    <!-- Profile Panel -->
     <div id="profile-panel" class="panel">
-      <div class="profile-header">
+      <div class="panel-header">
         <h3>Personal Information</h3>
-        <button class="btn" onclick="toggleEdit()">Edit Profile</button>
+        <button class="btn-edit-main" onclick="toggleEdit()">✏️ Edit Profile</button>
       </div>
 
       <div id="view-mode">
-        <label class="field-label">First Name</label>
-        <div class="field-val" id="view-first-name">—</div>
-        <label class="field-label">Last Name</label>
-        <div class="field-val" id="view-last-name">—</div>
-        <label class="field-label">Email</label>
-        <div class="field-val" id="view-email">—</div>
-        <label class="field-label">Contact Number</label>
-        <div class="field-val" id="view-contact">—</div>
-        <label class="field-label">Address</label>
-        <div class="field-val" id="view-address">—</div>
+        <div class="info-section">
+          <div class="section-title">👤 Basic Information</div>
+          <div class="info-grid">
+            <div class="field-item">
+              <div class="field-label">FIRST NAME</div>
+              <div class="field-val" id="view-first-name">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">LAST NAME</div>
+              <div class="field-val" id="view-last-name">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">EMAIL</div>
+              <div class="field-val" id="view-email">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">PHONE</div>
+              <div class="field-val" id="view-contact">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">DATE OF BIRTH</div>
+              <div class="field-val">1998-05-15</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">GENDER</div>
+              <div class="field-val">Female</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="section-title">❤️ Medical Information</div>
+          <div class="info-grid">
+            <div class="field-item">
+              <div class="field-label">BLOOD TYPE</div>
+              <div class="field-val" id="view-blood-type">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">WEIGHT (LBS)</div>
+              <div class="field-val">135 lbs</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">REGISTRATION DATE</div>
+              <div class="field-val">2024-01-15</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="section-title">📍 Address</div>
+          <div class="info-grid">
+            <div class="field-item" style="grid-column: span 1;">
+              <div class="field-label">STREET ADDRESS</div>
+              <div class="field-val" id="view-address">—</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">CITY</div>
+              <div class="field-val">College Town</div>
+            </div>
+            <div class="field-item">
+              <div class="field-label">STATE</div>
+              <div class="field-val">CA</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="edit-mode" class="hidden">
-        <label>First Name</label><input type="text" id="edit-first-name" />
-        <label>Last Name</label><input type="text" id="edit-last-name" />
-        <label>Email</label><input type="email" id="edit-email" />
-        <label>Contact Number</label><input type="tel" id="edit-contact" />
-        <label>Address</label><input type="text" id="edit-address" />
-        <div class="btn-row">
-          <button class="btn" onclick="saveProfile()">Save Changes</button>
-          <button class="btn btn-outline" onclick="toggleEdit()">Cancel</button>
+        <div class="info-grid">
+          <div class="field-item">
+              <label class="field-label">FIRST NAME</label>
+              <input type="text" id="edit-first-name" />
+          </div>
+          <div class="field-item">
+              <label class="field-label">LAST NAME</label>
+              <input type="text" id="edit-last-name" />
+          </div>
+          <div class="field-item">
+              <label class="field-label">EMAIL</label>
+              <input type="email" id="edit-email" />
+          </div>
+          <div class="field-item">
+              <label class="field-label">CONTACT NUMBER</label>
+              <input type="tel" id="edit-contact" />
+          </div>
+          <div class="field-item" style="grid-column: span 2;">
+              <label class="field-label">ADDRESS</label>
+              <input type="text" id="edit-address" />
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 2rem; display: flex; gap: 1rem;">
+          <button class="btn-edit-main" onclick="saveProfile()">Save Changes</button>
+          <button class="btn-edit-main" style="background:#888" onclick="toggleEdit()">Cancel</button>
         </div>
       </div>
     </div>
 
-    <!-- History Panel -->
     <div id="history-panel" class="panel hidden">
       <h3>Donation History</h3>
       <table>
@@ -96,9 +183,7 @@
           </tr>
         </thead>
         <tbody id="donation-history-tbody">
-          <tr>
-            <td colspan="4">Loading...</td>
-          </tr>
+          <tr><td colspan="4">Loading history...</td></tr>
         </tbody>
       </table>
     </div>
@@ -110,56 +195,47 @@
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/donor.js"></script>
+
   <script>
     let currentDonorProfile = null;
 
     async function init() {
       const session = await Auth.requireAuth();
       const userId = session.user.id;
-      console.log("Logged in userId:", userId);
-
       currentDonorProfile = await Donor.getProfile(userId);
 
       if (!currentDonorProfile) {
         document.getElementById("donor-name").textContent = "Profile not found";
-        document.getElementById("donor-id").textContent =
-          "Your profile could not be loaded. Please contact support or re-register.";
-        console.error("No profile found for:", userId);
         return;
       }
 
-      document.getElementById("donor-name").textContent =
-        `${currentDonorProfile.first_name} ${currentDonorProfile.last_name}`;
-      document.getElementById("donor-id").textContent =
-        `Donor ID: ${currentDonorProfile.donor_id || "Not assigned"}`;
-      document.getElementById("donor-blood-type").textContent =
-        currentDonorProfile.blood_type || "—";
-      document.getElementById("donor-status").textContent =
-        currentDonorProfile.status || "Active";
-      document.getElementById("view-first-name").textContent =
-        currentDonorProfile.first_name || "—";
-      document.getElementById("view-last-name").textContent =
-        currentDonorProfile.last_name || "—";
-      document.getElementById("view-email").textContent =
-        currentDonorProfile.email || "—";
-      document.getElementById("view-contact").textContent =
-        currentDonorProfile.contact_number || "—";
-      document.getElementById("view-address").textContent =
-        currentDonorProfile.address || "—";
-      document.getElementById("edit-first-name").value =
-        currentDonorProfile.first_name || "";
-      document.getElementById("edit-last-name").value =
-        currentDonorProfile.last_name || "";
-      document.getElementById("edit-email").value =
-        currentDonorProfile.email || "";
-      document.getElementById("edit-contact").value =
-        currentDonorProfile.contact_number || "";
-      document.getElementById("edit-address").value =
-        currentDonorProfile.address || "";
+      // Mapping Data to UI
+      document.getElementById("donor-name").textContent = `${currentDonorProfile.first_name} ${currentDonorProfile.last_name}`;
+      document.getElementById("donor-id").textContent = `Donor ID: ${currentDonorProfile.donor_id || "D001"}`;
+      document.getElementById("donor-blood-type").textContent = currentDonorProfile.blood_type || "O+";
+      document.getElementById("view-blood-type").textContent = currentDonorProfile.blood_type || "O+";
+      document.getElementById("donor-status").textContent = currentDonorProfile.status || "Active";
+      
+      document.getElementById("view-first-name").textContent = currentDonorProfile.first_name || "—";
+      document.getElementById("view-last-name").textContent = currentDonorProfile.last_name || "—";
+      document.getElementById("view-email").textContent = currentDonorProfile.email || "—";
+      document.getElementById("view-contact").textContent = currentDonorProfile.contact_number || "—";
+      document.getElementById("view-address").textContent = currentDonorProfile.address || "—";
 
+      // Populating Edit Form Fields
+      document.getElementById("edit-first-name").value = currentDonorProfile.first_name || "";
+      document.getElementById("edit-last-name").value = currentDonorProfile.last_name || "";
+      document.getElementById("edit-email").value = currentDonorProfile.email || "";
+      document.getElementById("edit-contact").value = currentDonorProfile.contact_number || "";
+      document.getElementById("edit-address").value = currentDonorProfile.address || "";
+
+      // Fetch and Render Donation History
       const history = await Donor.getDonationHistory(currentDonorProfile.id);
       Donor.renderDonationHistory(history);
+      
+      // Update Stats
       document.getElementById("stat-total-donations").textContent = history.length;
+      document.getElementById("stat-lives-saved").textContent = `You've saved ${history.length * 3} lives`;
     }
 
     function toggleEdit() {
@@ -176,18 +252,20 @@
         address: document.getElementById("edit-address").value,
       };
       const success = await Donor.updateProfile(currentDonorProfile.donor_id, updates);
-      if (success) { alert("Profile updated!"); location.reload(); }
+      if (success) { 
+          alert("Profile updated!"); 
+          location.reload(); 
+      }
     }
 
-    function switchTab(show, hide) {
+    function switchTab(show, hide, btn) {
       document.getElementById(show).classList.remove("hidden");
       document.getElementById(hide).classList.add("hidden");
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
     }
 
     init();
   </script>
 </body>
-
 </html>
