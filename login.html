@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Mapúa RedTrace</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body class="help-page login-page">
+    <header id="main-header">
+      <nav class="navbar">
+        <div class="logo">
+          <a href="index.html">
+            <img src="mapua-logo.png" alt="Mapúa Logo" />
+            <span>Mapúa RedTrace</span>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="help.html">Help/Policies</a></li>
+          <li><a href="notifications.html">Notifications</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="login.html" class="btn btn-red" style="text-decoration: none"
+            >Sign-In/Register</a
+          >
+          <div class="user-icon"><i class="fa-regular fa-user"></i></div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="login-container">
+      <div class="login-welcome">
+        <div id="auth-badge" class="badge-mini">
+          <i class="fa-solid fa-heart"></i> Donate Now
+        </div>
+        <h1 id="auth-title">Welcome Back</h1>
+        <p id="auth-subtext">
+          Sign in to access your donor dashboard and track your donations.
+        </p>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button
+            class="auth-tab active"
+            id="tab-signin"
+            onclick="toggleAuth('signin')"
+          >
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+          </button>
+          <button
+            class="auth-tab"
+            id="tab-register"
+            onclick="toggleAuth('register')"
+          >
+            <i class="fa-solid fa-user-plus"></i> Register
+          </button>
+        </div>
+
+        <div id="signin-section">
+          <div class="role-selector" id="role-container">
+            <p class="field-label">Login As</p>
+            <div class="role-btns">
+              <button
+                class="role-btn active"
+                id="donor-role"
+                onclick="selectRole('donor')"
+              >
+                <i class="fa-solid fa-heart-pulse"></i> Donor
+              </button>
+              <button
+                class="role-btn"
+                id="staff-role"
+                onclick="selectRole('staff')"
+              >
+                <i class="fa-solid fa-hospital-user"></i> Hospital Staff
+              </button>
+            </div>
+          </div>
+
+          <form class="auth-form" action="login.php" method="POST">
+            <div class="form-group">
+              <label>Email Address</label>
+              <div class="input-wrapper">
+                <i class="fa-regular fa-envelope"></i>
+                <input
+                  type="email"
+                  name="email"
+                  id="login-email"
+                  placeholder="your.email@university.edu"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-options">
+              <label class="remember-me"
+                ><input type="checkbox" /> Remember me</label
+              >
+              <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-red btn-full"
+              id="submit-auth-btn"
+            >
+              <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+          </form>
+          <p class="staff-notice" id="staff-footer-note" style="display: none">
+            <i class="fa-solid fa-circle-info"></i> Staff accounts are managed
+            by hospital administrators
+          </p>
+        </div>
+
+        <div id="register-section" style="display: none">
+          <form class="auth-form reg-grid" action="register.php" method="POST">
+            <div class="section-title full-width">
+              <i class="fa-solid fa-user-gear"></i> Account Information
+            </div>
+
+            <div class="form-group">
+              <label>First Name <span class="required">*</span></label>
+              <input
+                type="text"
+                name="firstname"
+                placeholder="Enter your first name"
+                required
+              />
+              <!--
+                This input collects the user's first name.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "firstname".
+                PHP will access it using $_POST['firstname'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="required">*</span></label>
+              <input
+                type="text"
+                name="lastname"
+                placeholder="Enter your last name"
+                required
+              />
+              <!--
+                This input collects the user's last name.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "lastname".
+                PHP will access it using $_POST['lastname'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input
+                type="email"
+                name="email"
+                placeholder="your.email@university.edu"
+                required
+              />
+              <!--
+                This input collects the user's email.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "email".
+                PHP will access it using $_POST['email'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span class="required">*</span></label>
+              <input
+                type="tel"
+                name="phone"
+                placeholder="+63 9XX XXX XXXX"
+                required
+              />
+              <!--
+                This input collects the user's email.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "email".
+                PHP will access it using $_POST['email'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Password <span class="required">*</span></label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Minimum 8 characters"
+                required
+              />
+              <!--
+                This input collects the user's password.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "password".
+                PHP will access it using $_POST['passwrod'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Confirm Password <span class="required">*</span></label>
+              <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
+
+            <div class="section-title full-width">Personal Information</div>
+            <div class="form-group">
+              <label>Date of Birth <span class="required">*</span></label>
+              <input type="date" name="birthday" required />
+              <!--
+                This input collects the user's bday.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "birthdy".
+                PHP will access it using $_POST['birthday'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Gender <span class="required">*</span></label>
+              <select name="gender" required>
+                <!--
+                This input collects the user's gender.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "gender".
+                PHP will access it using $_POST['gender'] and store it in the database.
+                -->
+                <option value="">Select gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="section-title full-width">
+              <i class="fa-solid fa-heart-pulse"></i> Medical Information
+            </div>
+            <div class="form-group">
+              <label>Blood Type <span class="required">*</span></label>
+              <select name="bloodtype" required>
+                <option value="">Select blood type</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>O+</option>
+                <option>O-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+              </select>
+              <!--
+                This input collects the user's lood type.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "bloodtype".
+                PHP will access it using $_POST['bloodtype'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Weight (lbs) <span class="required">*</span></label>
+              <input
+                type="number"
+                name="weight"
+                placeholder="Minimum 110 lbs"
+                min="110"
+                required
+              />
+              <!--
+                This input collects the user's weight.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "weight".
+                PHP will access it using $_POST['weight'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group full-width">
+              <label>Medical Conditions</label>
+              <textarea
+                name="medical_conditions"
+                placeholder="List any medical conditions (optional)"
+                rows="3"
+              ></textarea>
+              <!--
+                This input collects the user's med con.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "medical condition".
+                PHP will access it using $_POST['medical_condition'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group full-width">
+              <label>Current Medications</label>
+              <textarea
+                name="current_medications"
+                placeholder="List any medications you're currently taking (optional)"
+                rows="3"
+              ></textarea>
+              <!--
+                This input collects the user's cur med.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "current_medication".
+                PHP will access it using $_POST['current_medication'] and store it in the database.
+                -->
+            </div>
+
+            <div class="section-title full-width">
+              <i class="fa-solid fa-location-dot"></i> Address Information
+            </div>
+            <div class="form-group full-width">
+              <label>Street Address <span class="required">*</span></label>
+              <input
+                type="text"
+                name="street_address"
+                placeholder="Enter your street address"
+                required
+              />
+              <!--
+                This input collects the user's address.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "address".
+                PHP will access it using $_POST['address'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>City <span class="required">*</span></label>
+              <input type="text" name="city" placeholder="City" required />
+            </div>
+            <!--
+                This input collects the user's city.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "city".
+                PHP will access it using $_POST['city'] and store it in the database.
+                -->
+            <div class="form-group">
+              <label>ZIP Code <span class="required">*</span></label>
+              <input type="text" name="zip" placeholder="ZIP Code" required />
+            </div>
+            <!--
+                This input collects the user's zip.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "zip".
+                PHP will access it using $_POST['zip'] and store it in the database.
+                -->
+
+            <div class="section-title full-width">
+              <i class="fa-solid fa-phone-flip"></i> Emergency Contact
+            </div>
+            <div class="form-group">
+              <label>Contact Name <span class="required">*</span></label>
+              <input
+                type="text"
+                name="contact_name"
+                placeholder="Emergency contact name"
+                required
+              />
+              <!--
+                This input collects the user's conatnt peorson.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "contant perosn".
+                PHP will access it using $_POST['contact_person'] and store it in the database.
+                -->
+            </div>
+            <div class="form-group">
+              <label>Contact Phone <span class="required">*</span></label>
+              <input
+                type="tel"
+                name="contact_phone"
+                placeholder="+1 234-567-8900"
+                required
+              />
+              <!--
+                This input collects the user's contct phone.
+                The value entered here will be sent to the backend (register.php)
+                using POST with the name "contact phone".
+                PHP will access it using $_POST['contact_person'] and store it in the database.
+                -->
+            </div>
+
+            <div class="form-options full-width">
+              <label class="remember-me">
+                <input type="checkbox" required /> I consent to donate blood and
+                confirm all information is accurate.
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-red btn-full full-width">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-container">
+        <div class="footer-brand">
+          <div class="logo">
+            <img src="mapua-logo.png" alt="Mapúa Logo" />
+            <span>RedTrace</span>
+          </div>
+          <p>
+            Empowering our university community to save lives through efficient
+            blood donation management and transparent tracking systems.
+          </p>
+          <div class="social-icons">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="#">Donate Now</a>
+          <a href="#">Dashboard</a>
+          <a href="notifications.html">Notifications</a>
+          <a href="help.html">Help/Policies</a>
+        </div>
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <a href="#">Donation Guidelines</a>
+          <a href="#">Eligibility Criteria</a>
+          <a href="#">FAQs</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact Us</h4>
+          <p>
+            <i class="fa-solid fa-location-dot"></i> University Medical Center
+            Room 201, Main Campus
+          </p>
+          <p><i class="fa-solid fa-phone"></i> +1 (555) 123-4567</p>
+          <p><i class="fa-solid fa-envelope"></i> info@redtrace.edu</p>
+          <p><i class="fa-solid fa-clock"></i> Mon-Fri: 9AM - 5PM</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 RedTrace. All rights reserved.</p>
+        <p>Powered by VSCode</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
