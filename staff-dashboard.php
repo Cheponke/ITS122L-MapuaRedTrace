@@ -37,7 +37,9 @@
                     <p>Hospital Staff Portal</p>
                 </div>
             </div>
-            <button class="btn btn-white btn-signout"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+            <button class="btn btn-white btn-signout" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
         </section>
 
         <div class="notif-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
@@ -157,29 +159,12 @@
                 </div>
             </div>
 
-            <?php
-			include "config.php";
-
-			// Fetch counts based on VARCHAR status strings
-			$total_res     = mysqli_query($conn, "SELECT COUNT(*) AS total FROM inventory");
-			$avail_res     = mysqli_query($conn, "SELECT COUNT(*) AS total FROM inventory WHERE Inventory_Status = 'Available'");
-			$reserved_res  = mysqli_query($conn, "SELECT COUNT(*) AS total FROM inventory WHERE Inventory_Status = 'Reserved'");
-
-			// Counts as Expired if status is 'Expired' OR if the date has passed
-			$expired_res   = mysqli_query($conn, "SELECT COUNT(*) AS total FROM inventory WHERE Inventory_Status = 'Expired' OR Inventory_ExpDate < CURDATE()");
-
-			$total     = mysqli_fetch_assoc($total_res)['total'];
-			$available = mysqli_fetch_assoc($avail_res)['total'];
-			$reserved  = mysqli_fetch_assoc($reserved_res)['total'];
-			$expired   = mysqli_fetch_assoc($expired_res)['total'];
-			?>
-
-			<div class="inventory-summary-grid">
-				<div class="inv-summary-item blue-bg"><span><?php echo $total; ?></span><p>Total Units</p></div>
-				<div class="inv-summary-item green-bg"><span><?php echo $available; ?></span><p>Available</p></div>
-				<div class="inv-summary-item yellow-bg"><span><?php echo $reserved; ?></span><p>Reserved</p></div>
-				<div class="inv-summary-item gray-bg"><span><?php echo $expired; ?></span><p>Expired</p></div>
-			</div>
+            <div class="inventory-summary-grid">
+                <div class="inv-summary-item blue-bg"><span>5</span><p>Total Units</p></div>
+                <div class="inv-summary-item green-bg"><span>3</span><p>Available</p></div>
+                <div class="inv-summary-item yellow-bg"><span>1</span><p>Reserved</p></div>
+                <div class="inv-summary-item gray-bg"><span>1</span><p>Expired</p></div>
+            </div>
 
             <table class="history-table staff-table">
                 <thead>
@@ -194,82 +179,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-					mysqli_query($conn,"
-					UPDATE inventory
-					SET Inventory_Status='Expired'
-					WHERE Inventory_ExpDate < CURDATE()
-					AND Inventory_Status!='Expired'
-					");
-					
-					include_once "config.php";
-
-					$sql = "SELECT 
-					inventory.InventoryID,
-					inventory.Inventory_BloodType,
-					inventory.Inventory_Volume,
-					inventory.Inventory_ExpDate,
-					inventory.Inventory_Status,
-					users.first_name,
-					users.last_name
-					FROM inventory
-					JOIN users ON inventory.DonationID = users.id";
-
-					$result = mysqli_query($conn,$sql);
-
-					if(mysqli_num_rows($result) > 0){
-
-					while($row = mysqli_fetch_assoc($result)){
-
-					$inventory_id = $row['InventoryID'];
-					$name = $row['first_name']." ".$row['last_name'];
-					$blood = $row['Inventory_BloodType'];
-					$volume = $row['Inventory_Volume'];
-					$exp = $row['Inventory_ExpDate'];
-					$status = $row['Inventory_Status'];
-
-					if($status == "Available"){
-						$statusClass = "success";
-					}
-					elseif($status == "Reserved"){
-						$statusClass = "warning";
-					}
-					elseif($status == "Expired"){
-						$statusClass = "expired";
-					}
-					else{
-						$statusClass = "";
-					}
-
-					echo "
-					<tr>
-					<td>INV00$inventory_id</td>
-					<td>$name</td>
-					<td><span class='blood-badge'>$blood</span></td>
-					<td>{$volume} ml</td>
-					<td>$exp</td>
-					<td><span class='status-pill $statusClass'>$status</span></td>
-					<td>
-
-					<button class='icon-btn' style='color:#3b82f6;'>
-					<i class='fa-solid fa-bell'></i>
-					</button>
-
-					<button class='icon-btn' style='color:#ef4444;' onclick='deleteInventory($inventory_id)'>
-					<i class='fa-solid fa-trash'></i>
-					</button>
-
-					</td>
-					</tr>
-					";
-					}
-
-					}else{
-
-					echo "<tr><td colspan='7'>No inventory records found</td></tr>";
-
-					}
-					?>
+                    <tr>
+                        <td>INV001</td>
+                        <td>Sarah Johnson</td>
+                        <td><span class="blood-badge">O+</span></td>
+                        <td>450 ml</td>
+                        <td>2025-01-15</td>
+                        <td><span class="status-pill success">Available</span></td>
+                        <td>
+                            <button class="icon-btn" style="color: #3b82f6;"><i class="fa-solid fa-bell"></i></button>
+                            <button class="icon-btn" style="color: #ef4444;"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -314,6 +235,11 @@
                 <div class="input-group full-width">
                 <label>Weight (lbs)</label>
                 <input type="number" name="weight" placeholder="165" required>
+                </div>
+
+                <div class="input-group full-width">
+                <label>Donation Location</label>
+                <input type="text" name="location" placeholder="Mapua Medical Center Room 201" required>
                 </div>
 
                 </div>

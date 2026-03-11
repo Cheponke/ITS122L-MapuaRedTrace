@@ -22,8 +22,10 @@ echo json_encode([
     "systolic" => $bp[0],
     "diastolic" => $bp[1],
     "pulse" => $row['pulse_rate'],
+    "temperature" => $row['temperature'],   // ADD THIS
     "hemoglobin" => $row['hemoglobin_level'],
-    "weight" => $row['weight']
+    "weight" => $row['weight'],
+    "location" => $row['location']
 ]);
 
 }else{

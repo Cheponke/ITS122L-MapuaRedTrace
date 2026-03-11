@@ -7,6 +7,18 @@ $donor_id = $_SESSION['user_id']; // logged in donor
 $query = "SELECT * FROM screenings WHERE donor_id='$donor_id' ORDER BY id DESC LIMIT 1";
 $result = mysqli_query($conn,$query);
 $data = mysqli_fetch_assoc($result);
+
+if(!$data){
+    $data = [
+        "date" => date("Y-m-d H:i:s"),
+        "location" => "Waiting for staff screening",
+        "blood_pressure" => "--",
+        "pulse_rate" => "--",
+        "temperature" => "--",
+        "hemoglobin_level" => "--",
+        "weight" => "--"
+    ];
+}
 ?>
 
 <!doctype html>
@@ -403,10 +415,9 @@ $data = mysqli_fetch_assoc($result);
                 </div>
                 <div class="vital-details">
                   <span class="v-label">Blood Pressure</span>
-                  <span class="v-value"
-                    ><?php echo $data['blood_pressure']; ?>
-                    mmHg</span
-                  >
+                 <span class="v-value bp-value">
+                  <?php echo $data['blood_pressure']; ?> mmHg
+                  </span>
                   <span class="v-status success-text">Normal</span>
                 </div>
               </div>
@@ -416,10 +427,9 @@ $data = mysqli_fetch_assoc($result);
                 </div>
                 <div class="vital-details">
                   <span class="v-label">Pulse Rate</span>
-                  <span class="v-value"
-                    ><?php echo $data['pulse_rate']; ?>
-                    bpm</span
-                  >
+                  <span class="v-value pulse-value">
+                  <?php echo $data['pulse_rate']; ?> bpm
+                  </span>
                   <span class="v-status success-text">Normal</span>
                 </div>
               </div>
@@ -429,7 +439,7 @@ $data = mysqli_fetch_assoc($result);
                 </div>
                 <div class="vital-details">
                   <span class="v-label">Temperature</span>
-                  <span class="v-value"
+                  <span class="v-value temp-value">
                     ><?php echo $data['temperature']; ?>
                     °C</span
                   >
@@ -442,10 +452,9 @@ $data = mysqli_fetch_assoc($result);
                 </div>
                 <div class="vital-details">
                   <span class="v-label">Hemoglobin Level</span>
-                  <span class="v-value"
-                    ><?php echo $data['hemoglobin_level']; ?>
-                    g/dL</span
-                  >
+                  <span class="v-value hemo-value">
+                  <?php echo $data['hemoglobin_level']; ?> g/dL
+                  </span>
                   <span class="v-status success-text">Normal</span>
                 </div>
               </div>
@@ -455,10 +464,9 @@ $data = mysqli_fetch_assoc($result);
                 </div>
                 <div class="vital-details">
                   <span class="v-label">Weight</span>
-                  <span class="v-value"
-                    ><?php echo $data['weight']; ?>
-                    lbs</span
-                  >
+                  <span class="v-value weight-value">
+                  <?php echo $data['weight']; ?> lbs
+                  </span>
                   <span class="v-status success-text"
                     >Meets minimum requirements</span
                   >
@@ -528,7 +536,9 @@ $data = mysqli_fetch_assoc($result);
               </div>
               <div>
                 <label>DATE</label>
-                <strong>Sunday, March 8, 2026</strong>
+                <strong>
+                <?php echo date("F j, Y g:i A", strtotime($data['date'])); ?>
+                </strong>
               </div>
             </div>
 
@@ -538,10 +548,11 @@ $data = mysqli_fetch_assoc($result);
               </div>
               <div>
                 <label>LOCATION</label>
-                <strong>University Medical Center</strong>
+                <strong class="location-value"><?php echo $data['location']; ?></strong>
               </div>
             </div>
 
+            <!--
             <div class="detail-item">
               <div class="detail-icon-box">
                 <i class="fa-solid fa-droplet"></i>
@@ -559,9 +570,14 @@ $data = mysqli_fetch_assoc($result);
               <div>
                 <label>DURATION</label>
                 <strong>~10-15 minutes</strong>
+                --
               </div>
             </div>
+-->
           </div>
+
+
+          
 
           <div class="vitals-summary-container">
             <h5 class="summary-header">
@@ -587,10 +603,9 @@ $data = mysqli_fetch_assoc($result);
 
               <div class="summary-card">
                 <span class="label">Temp</span>
-                <span class="v-value"
-                  ><?php echo $data['temperature']; ?>
-                  °C</span
-                >
+              <span class="v-value temp-value">
+              <?php echo $data['temperature']; ?> °C
+              </span>
               </div>
 
               <div class="summary-card">
@@ -662,14 +677,18 @@ $data = mysqli_fetch_assoc($result);
               <i class="fa-solid fa-tint"></i> Donation Summary
             </div>
             <div class="summary-row">
-              <span>Date</span><strong>Sunday, March 8, 2026</strong>
+              <span>Date</span>
+              <strong><?php echo date("F j, Y g:i A", strtotime($data['date'])); ?></strong>
             </div>
             <div class="summary-row">
-              <span>Location</span><strong>University Medical Center</strong>
+              <span>Location</span>
+              <strong><?php echo $data['location']; ?></strong>
             </div>
+            <!--
             <div class="summary-row">
               <span>Type</span><strong>Whole Blood</strong>
             </div>
+              -->
             <div class="summary-row">
               <span>Status</span>
               <span class="status-badge-success">
@@ -706,7 +725,7 @@ $data = mysqli_fetch_assoc($result);
               </div>
               <div class="care-item">
                 <div class="care-icon-box">
-                  <i class="fa-solis fa-bandage"></i>
+                  <i class="fa-solid fa-bandage"></i>
                 </div>
                 <p>Keep the bandage on for at least 4 hours</p>
               </div>
@@ -792,6 +811,32 @@ $data = mysqli_fetch_assoc($result);
       </div>
     </div>
 
+    <script>
+
+    function checkScreening(){
+
+    fetch("check_screening.php?donor_id=<?php echo $donor_id; ?>")
+    .then(response => response.json())
+    .then(data => {
+
+    if(data.status === "done"){
+
+    document.querySelector(".bp-value").innerText = data.systolic + "/" + data.diastolic + " mmHg";
+    document.querySelector(".pulse-value").innerText = data.pulse + " bpm";
+    document.querySelector(".temp-value").innerText = data.temperature + " °C ";
+    document.querySelector(".hemo-value").innerText = data.hemoglobin + " g/dL";
+    document.querySelector(".weight-value").innerText = data.weight + " lbs";
+    document.querySelector(".location-value").innerText = data.location;
+
+    }
+
+    });
+
+    }
+
+    setInterval(checkScreening, 5000); // check every 5 seconds
+
+</script>
     <footer>
       <div class="footer-container">
         <div class="footer-brand">

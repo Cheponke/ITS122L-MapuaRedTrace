@@ -622,28 +622,31 @@ window.onclick = function (event) {
   }
 };
 
-// ==========================================================================
-// BLOOD DONATION INVENTORY
-// ==========================================================================
-// Delete Inventory
-function deleteInventory(id) {
-    if (confirm("Are you sure you want to delete Inventory ID: " + id + "?")) {
-        fetch('delete_inventory.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'inventory_id=' + id
-        })
-        .then(response => response.text())
-        .then(data => {
-            if (data.trim() === "success") {
-                alert("Entry deleted successfully.");
-                location.reload(); // Refresh to show updated list
-            } else {
-                alert("Error deleting entry: " + data);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
+// For Password constraits
+document.addEventListener("DOMContentLoaded", function () {
+  const registerForm = document.querySelector("#register-section form");
+
+  if (registerForm) {
+    registerForm.addEventListener("submit", function (e) {
+      const pass = registerForm.querySelector('input[name="password"]').value;
+      const confirm = registerForm.querySelector(
+        'input[name="confirm_password"]',
+      ).value;
+
+      if (pass !== confirm) {
+        alert("Passwords do not match.");
+        e.preventDefault();
+      }
+    });
+  }
+});
+
+// Pass error
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("error")) {
+  const errorMsg = document.getElementById("login-error");
+  if (errorMsg) {
+    errorMsg.style.display = "block";
+  }
 }
