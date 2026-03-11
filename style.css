@@ -2555,6 +2555,26 @@ body.help-page {
   font-size: 0.85rem;
 }
 
+.status-pill.warning {
+  font-weight: 600;
+  background:#fef3c7;
+  color:#92400e;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.status-pill.expired {
+  font-weight: 600;
+  background:#e5e7eb;
+  color:#374151;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+
+
 /* ==========================================================================
    STAFF DASHBOARD SPECIFIC STYLES
    ========================================================================== */

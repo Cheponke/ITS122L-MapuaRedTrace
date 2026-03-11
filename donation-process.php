@@ -2,6 +2,7 @@
 session_start();
 include "config.php";
 
+$donor_id = $_SESSION['user_id']; // logged in donor
 
 $query = "SELECT * FROM screenings WHERE donor_id='$donor_id' ORDER BY id DESC LIMIT 1";
 $result = mysqli_query($conn,$query);
@@ -538,6 +539,26 @@ $data = mysqli_fetch_assoc($result);
               <div>
                 <label>LOCATION</label>
                 <strong>University Medical Center</strong>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon-box">
+                <i class="fa-solid fa-droplet"></i>
+              </div>
+              <div>
+                <label>DONATION TYPE</label>
+                <strong>Whole Blood</strong>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon-box">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div>
+                <label>DURATION</label>
+                <strong>~10-15 minutes</strong>
               </div>
             </div>
           </div>

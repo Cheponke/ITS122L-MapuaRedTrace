@@ -621,3 +621,29 @@ window.onclick = function (event) {
     closeVitalsModal();
   }
 };
+
+// ==========================================================================
+// BLOOD DONATION INVENTORY
+// ==========================================================================
+// Delete Inventory
+function deleteInventory(id) {
+    if (confirm("Are you sure you want to delete Inventory ID: " + id + "?")) {
+        fetch('delete_inventory.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inventory_id=' + id
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data.trim() === "success") {
+                alert("Entry deleted successfully.");
+                location.reload(); // Refresh to show updated list
+            } else {
+                alert("Error deleting entry: " + data);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}

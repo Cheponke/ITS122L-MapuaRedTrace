@@ -8,40 +8,28 @@ $password = $_POST['password'];
 $sql = "SELECT * FROM users WHERE email='$email'";
 $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {    
+if ($result->num_rows > 0) {
 
     $row = $result->fetch_assoc();
 
     if (password_verify($password, $row['password'])) {
 
-        $_SESSION['user_id'] = $row['id'];
-        $_SESSION['name'] = $row['first_name'];
-        $_SESSION['role'] = $row['role'];
+     if (password_verify($password, $row['password'])) {
 
-        // Redirect based on role
-        if ($row['role'] == "staff") {
+    $_SESSION['user_id'] = $row['id'];
+    $_SESSION['name'] = $row['first_name'];
+    $_SESSION['role'] = $row['role'];
 
-            echo "
-            <script>
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', 'staff');
-            window.location.href='staff-dashboard.php';
-            </script>
-            ";
+    echo "
+    <script>
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userRole', '".$row['role']."');
+    window.location.href='index.html';
+    </script>
+    ";
 
-        } else {
-
-            echo "
-            <script>
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', 'donor');
-            window.location.href='index.html';
-            </script>
-            ";
-
-        }
-
-        exit();
+    exit();
+}
 
     } else {
         echo "Invalid password";
