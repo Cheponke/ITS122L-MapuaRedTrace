@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedTrace — Donor Dashboard</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .stat-card h3 { color: var(--mapua-red); }
+    #donor-status { color: var(--accent-green); }
+    .tab-btn.active { background: var(--mapua-red); }
+    table thead th { background: #fdf5f5; color: var(--mapua-red); }
+    .btn[onclick="toggleEdit()"] { background: var(--mapua-gold); color: var(--mapua-deeper); font-weight: 700; }
+    .btn[onclick="toggleEdit()"]:hover { background: var(--mapua-gold-hover); }
+    .nav-donate { background: var(--mapua-gold) !important; color: var(--mapua-deeper) !important; font-weight: 700; }
+  </style>
 </head>
 <body>
 
@@ -17,7 +26,7 @@
       <a href="../index.html">Home</a>
       <a href="policies.html">Help/Policies</a>
       <a href="notifications.html">Notifications</a>
-      <a href="donation-process.html" class="btn btn-sm">Donate Now</a>
+      <a href="donation-process.html" class="btn btn-sm nav-donate">Donate Now</a>
       <button onclick="Auth.logout()" class="btn-signout">Sign Out</button>
     </div>
   </nav>
@@ -27,23 +36,14 @@
     <div class="user-header">
       <div>
         <h2 id="donor-name" style="margin:0;">Loading...</h2>
-        <p id="donor-id" style="margin:0; color:#888; font-size:0.85rem;"></p>
+        <p id="donor-id" style="margin:0; color:rgba(255,255,255,0.75); font-size:0.85rem;"></p>
       </div>
     </div>
 
     <div class="stats-row">
-      <div class="stat-card">
-        <h3 id="stat-total-donations">—</h3>
-        <p style="margin:0; color:#888;">Total Donations</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="donor-blood-type">—</h3>
-        <p style="margin:0; color:#888;">Blood Type</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="donor-status">—</h3>
-        <p style="margin:0; color:#888;">Donor Status</p>
-      </div>
+      <div class="stat-card"><h3 id="stat-total-donations">—</h3><p style="margin:0; color:#888;">Total Donations</p></div>
+      <div class="stat-card"><h3 id="donor-blood-type">—</h3><p style="margin:0; color:#888;">Blood Type</p></div>
+      <div class="stat-card"><h3 id="donor-status">—</h3><p style="margin:0; color:#888;">Donor Status</p></div>
     </div>
 
     <div class="tabs">
@@ -53,7 +53,7 @@
 
     <div id="profile-panel" class="panel">
       <div class="flex-between" style="margin-bottom:1.5rem;">
-        <h3 style="margin:0;">Personal Information</h3>
+        <h3 style="margin:0; color:var(--mapua-red);">Personal Information</h3>
         <button class="btn" onclick="toggleEdit()">Edit Profile</button>
       </div>
 
@@ -99,7 +99,7 @@
     </div>
 
     <div id="history-panel" class="panel hidden">
-      <h3>Donation History</h3>
+      <h3 style="color:var(--mapua-red); margin-bottom:1rem;">Donation History</h3>
       <table>
         <thead>
           <tr><th>Date</th><th>Status</th><th>Quantity</th><th>Blood Type</th></tr>

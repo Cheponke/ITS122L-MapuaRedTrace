@@ -5,6 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapua RedTrace — Home</title>
   <link rel="stylesheet" href="css/style.css" />
+
+   <style>
+    :root {
+      --mapua-red: #8B0000;
+      --mapua-dark: #6B0000;
+      --mapua-gold: #c8a951;
+    }
+
+    .hero {
+      background: url('red-bg.jpg') center center / cover no-repeat;
+      position: relative;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(100, 0, 0, 0.72);
+    }
+
+    .hero img,
+    .hero h1,
+    .hero p,
+    .hero a {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      color: #ffffff !important;
+      font-size: 2.2rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .hero h1 span {
+      color: var(--mapua-gold) !important;
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.85) !important;
+    }
+
+    .hero .btn {
+      background: var(--mapua-gold);
+      color: #5a0000 !important;
+      font-weight: 700;
+      border: none;
+    }
+
+    .hero .btn:hover {
+      background: #e0bc6a;
+    }
+
+    .hero .btn-outline {
+      background: transparent;
+      color: white !important;
+      border: 2px solid white;
+    }
+
+    .hero .btn-outline:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .stat-card h2 {
+      color: var(--mapua-red) !important;
+    }
+
+    nav {
+      background: var(--mapua-red);
+    }
+
+    .nav-logo strong,
+    nav a {
+      color: white !important;
+    }
+
+    nav a:hover {
+      color: var(--mapua-gold) !important;
+    }
+
+    .btn-sm {
+      background: var(--mapua-gold) !important;
+      color: #5a0000 !important;
+      font-weight: 700;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -23,8 +112,8 @@
 
   <section class="hero">
     <img src="mapua-logo.png" alt="Mapua RedTrace" style="height:80px; margin-bottom:1rem;" />
-    <h1>Save Lives with <span style="color:#c0392b;">RedTrace</span></h1>
-    <p style="color:#666; max-width:500px; margin:0 auto 1.5rem;">A comprehensive blood donation management system for the Mapua University community.</p>
+    <h1>Save Lives with <span>RedTrace</span></h1>
+    <p>A comprehensive blood donation management system for the Mapua University community.</p>
     <a href="pages/login.html" class="btn">Donate Now</a>
     <a href="pages/donor-dashboard.html" class="btn btn-outline" style="margin-left:1rem;">View Dashboard</a>
   </section>

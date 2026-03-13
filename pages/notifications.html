@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RedTrace — Notifications</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page-header { margin-bottom: 1.5rem; }
+    .page-header h2 { color: var(--mapua-red); }
+    #send-btn { background: var(--mapua-gold); color: var(--mapua-deeper); font-weight: 700; }
+    #send-btn:hover { background: var(--mapua-gold-hover); }
+    .stat-card h3 { font-size: 1.5rem; }
+  </style>
 </head>
 <body>
 
@@ -21,7 +28,7 @@
   </nav>
 
   <div class="container" style="max-width:800px;">
-    <div class="flex-between" style="margin-bottom:1.5rem;">
+    <div class="flex-between page-header">
       <div>
         <h2 style="margin:0;">Alerts and Notifications</h2>
         <p style="margin:0; color:#888; font-size:0.9rem;">Notifications about blood drives, emergencies, and updates</p>
@@ -30,10 +37,10 @@
     </div>
 
     <div class="stats-row">
-      <div class="stat-card"><h3 id="stat-urgent" style="color:#c0392b;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Urgent Alerts</p></div>
-      <div class="stat-card"><h3 id="stat-events" style="color:#3498db;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Event Notices</p></div>
-      <div class="stat-card"><h3 id="stat-reminders" style="color:#27ae60;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Reminders</p></div>
-      <div class="stat-card"><h3 id="stat-total">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Total Sent</p></div>
+      <div class="stat-card"><h3 id="stat-urgent" style="color:var(--mapua-red);">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Urgent Alerts</p></div>
+      <div class="stat-card"><h3 id="stat-events" style="color:var(--accent-blue);">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Event Notices</p></div>
+      <div class="stat-card"><h3 id="stat-reminders" style="color:var(--accent-green);">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Reminders</p></div>
+      <div class="stat-card"><h3 id="stat-total" style="color:var(--mapua-red);">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Total Sent</p></div>
     </div>
 
     <div class="filter-bar">
@@ -55,22 +62,15 @@
       <h3>Send New Notification</h3>
       <label>Notification Type</label>
       <select id="notif-type" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
-        <option>Urgent</option>
-        <option>Event</option>
-        <option>Reminder</option>
-        <option>Info</option>
+        <option>Urgent</option><option>Event</option><option>Reminder</option><option>Info</option>
       </select>
       <label>Target Audience</label>
       <select id="notif-target" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
         <option value="">All Donors</option>
-        <option value="A+">A+ Donors</option>
-        <option value="A-">A- Donors</option>
-        <option value="B+">B+ Donors</option>
-        <option value="B-">B- Donors</option>
-        <option value="AB+">AB+ Donors</option>
-        <option value="AB-">AB- Donors</option>
-        <option value="O+">O+ Donors</option>
-        <option value="O-">O- Donors</option>
+        <option value="A+">A+ Donors</option><option value="A-">A- Donors</option>
+        <option value="B+">B+ Donors</option><option value="B-">B- Donors</option>
+        <option value="AB+">AB+ Donors</option><option value="AB-">AB- Donors</option>
+        <option value="O+">O+ Donors</option><option value="O-">O- Donors</option>
       </select>
       <label>Message</label>
       <textarea id="notif-content" style="width:100%; padding:0.6rem; border:1px solid #ccc; border-radius:6px; height:100px; margin-bottom:0.75rem; box-sizing:border-box; resize:vertical;" placeholder="Write your notification message here..."></textarea>
@@ -105,7 +105,6 @@
     async function init() {
       const session = await Auth.getSession();
       const role = localStorage.getItem("userRole");
-
       if (role === "staff") {
         document.getElementById("send-btn").style.display = "inline-block";
         allNotifications = await Notifications.getAll();
@@ -114,43 +113,42 @@
       } else {
         allNotifications = await Notifications.getAll();
       }
-
       renderStats(allNotifications);
       renderNotifications(allNotifications);
     }
 
     function renderStats(notifs) {
-      document.getElementById("stat-total").textContent    = notifs.length;
-      document.getElementById("stat-urgent").textContent   = notifs.filter(n => n.notification_type === "Urgent").length;
-      document.getElementById("stat-events").textContent   = notifs.filter(n => n.notification_type === "Event").length;
-      document.getElementById("stat-reminders").textContent= notifs.filter(n => n.notification_type === "Reminder").length;
+      document.getElementById("stat-total").textContent     = notifs.length;
+      document.getElementById("stat-urgent").textContent    = notifs.filter(n => n.notification_type === "Urgent").length;
+      document.getElementById("stat-events").textContent    = notifs.filter(n => n.notification_type === "Event").length;
+      document.getElementById("stat-reminders").textContent = notifs.filter(n => n.notification_type === "Reminder").length;
     }
 
     function renderNotifications(notifs) {
-  const container = document.getElementById("notifications-list");
-  if (!notifs.length) {
-    container.innerHTML = `<p style="color:#888; text-align:center; padding:2rem;">No notifications found.</p>`;
-    return;
-  }
-  container.innerHTML = notifs.map(n => `
-    <div class="notification-item ${(n.notification_type || "").toLowerCase()}" 
-         onclick="openNotifModal(${JSON.stringify(n).replace(/"/g, '&quot;')})" 
-         style="cursor:pointer;">
-      <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
-      <p style="margin:0.5rem 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.notification_content}</p>
-      <small style="color:#aaa;">${formatDateTime(n.notification_timestamp)}</small>
-    </div>
-    `).join("");
-  }
+      const container = document.getElementById("notifications-list");
+      if (!notifs.length) {
+        container.innerHTML = `<p style="color:#888; text-align:center; padding:2rem;">No notifications found.</p>`;
+        return;
+      }
+      container.innerHTML = notifs.map(n => `
+        <div class="notification-item ${(n.notification_type || "").toLowerCase()}"
+             onclick="openNotifModal(${JSON.stringify(n).replace(/"/g, '&quot;')})"
+             style="cursor:pointer;">
+          <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
+          <p style="margin:0.5rem 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.notification_content}</p>
+          <small style="color:#aaa;">${formatDateTime(n.notification_timestamp)}</small>
+        </div>
+      `).join("");
+    }
 
-function openNotifModal(n) {
-  document.getElementById("notif-modal-type").textContent      = n.notification_type || "Info";
-  document.getElementById("notif-modal-type").className        = "notif-type " + (n.notification_type || "").toLowerCase();
-  document.getElementById("notif-modal-content").textContent   = n.notification_content;
-  document.getElementById("notif-modal-target").textContent    = n.target_audience ? "Target: " + n.target_audience + " Donors" : "Target: All Donors";
-  document.getElementById("notif-modal-timestamp").textContent = formatDateTime(n.notification_timestamp);
-  document.getElementById("notif-modal").style.display         = "flex";
-}
+    function openNotifModal(n) {
+      document.getElementById("notif-modal-type").textContent      = n.notification_type || "Info";
+      document.getElementById("notif-modal-type").className        = "notif-type " + (n.notification_type || "").toLowerCase();
+      document.getElementById("notif-modal-content").textContent   = n.notification_content;
+      document.getElementById("notif-modal-target").textContent    = n.target_audience ? "Target: " + n.target_audience + " Donors" : "Target: All Donors";
+      document.getElementById("notif-modal-timestamp").textContent = formatDateTime(n.notification_timestamp);
+      document.getElementById("notif-modal").style.display         = "flex";
+    }
 
     function filterNotifs(type, btn) {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -162,14 +160,14 @@ function openNotifModal(n) {
     function closeSendModal() { document.getElementById("send-modal").style.display = "none"; }
 
     async function sendNotification() {
-  const type    = document.getElementById("notif-type").value;
-  const content = document.getElementById("notif-content").value.trim();
-  const target  = document.getElementById("notif-target").value;
-  if (!content) { alert("Please enter a message."); return; }
-  const success = await Notifications.send({ type, content, target });
-  if (success) { closeSendModal(); await init(); }
-  else alert("Failed to send notification.");
-}
+      const type    = document.getElementById("notif-type").value;
+      const content = document.getElementById("notif-content").value.trim();
+      const target  = document.getElementById("notif-target").value;
+      if (!content) { alert("Please enter a message."); return; }
+      const success = await Notifications.send({ type, content, target });
+      if (success) { closeSendModal(); await init(); }
+      else alert("Failed to send notification.");
+    }
 
     init();
   </script>
