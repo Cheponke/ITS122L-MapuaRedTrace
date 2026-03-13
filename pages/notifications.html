@@ -9,28 +9,31 @@
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div class="nav-logo">
+      <img src="../mapua-logo.png" alt="Mapua" style="height:32px; vertical-align:middle; margin-right:0.5rem;" />
+      <strong>RedTrace</strong>
+    </div>
     <div>
       <a href="../index.html">Home</a>
       <a href="policies.html">Help/Policies</a>
+      <button onclick="Auth.logout()" class="btn-signout">Sign Out</button>
     </div>
   </nav>
 
-  <div class="container">
-
-    <div class="page-header">
+  <div class="container" style="max-width:800px;">
+    <div class="flex-between" style="margin-bottom:1.5rem;">
       <div>
-        <h2>Alerts &amp; Notifications</h2>
-        <p>Manage and send notifications to donors about drives, emergencies, and updates</p>
+        <h2 style="margin:0;">Alerts and Notifications</h2>
+        <p style="margin:0; color:#888; font-size:0.9rem;">Notifications about blood drives, emergencies, and updates</p>
       </div>
       <button class="btn" id="send-btn" style="display:none;" onclick="openSendModal()">+ Send New Notification</button>
     </div>
 
     <div class="stats-row">
-      <div class="stat-card"><h3 id="stat-urgent" class="text-red">—</h3><p>Urgent Alerts</p></div>
-      <div class="stat-card"><h3 id="stat-events" style="color:var(--blue);">—</h3><p>Event Notices</p></div>
-      <div class="stat-card"><h3 id="stat-reminders" class="text-green">—</h3><p>Reminders</p></div>
-      <div class="stat-card"><h3 id="stat-total">—</h3><p>Total Sent</p></div>
+      <div class="stat-card"><h3 id="stat-urgent" style="color:#c0392b;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Urgent Alerts</p></div>
+      <div class="stat-card"><h3 id="stat-events" style="color:#3498db;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Event Notices</p></div>
+      <div class="stat-card"><h3 id="stat-reminders" style="color:#27ae60;">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Reminders</p></div>
+      <div class="stat-card"><h3 id="stat-total">—</h3><p style="margin:0;font-size:0.8rem;color:#888;">Total Sent</p></div>
     </div>
 
     <div class="filter-bar">
@@ -46,27 +49,32 @@
     </div>
   </div>
 
-  <!-- SEND MODAL -->
+  <!-- SEND MODAL (staff only) -->
   <div class="modal-overlay" id="send-modal">
     <div class="modal-box">
       <h3>Send New Notification</h3>
       <label>Notification Type</label>
-      <select id="notif-type">
+      <select id="notif-type" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
         <option>Urgent</option>
         <option>Event</option>
         <option>Reminder</option>
         <option>Info</option>
       </select>
       <label>Target Audience</label>
-      <select id="notif-target">
+      <select id="notif-target" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
         <option value="">All Donors</option>
         <option value="A+">A+ Donors</option>
-        <option value="O-">O- Donors</option>
+        <option value="A-">A- Donors</option>
         <option value="B+">B+ Donors</option>
+        <option value="B-">B- Donors</option>
+        <option value="AB+">AB+ Donors</option>
+        <option value="AB-">AB- Donors</option>
+        <option value="O+">O+ Donors</option>
+        <option value="O-">O- Donors</option>
       </select>
       <label>Message</label>
-      <textarea id="notif-content" placeholder="Write your notification message here..."></textarea>
-      <div class="modal-actions">
+      <textarea id="notif-content" style="width:100%; padding:0.6rem; border:1px solid #ccc; border-radius:6px; height:100px; margin-bottom:0.75rem; box-sizing:border-box; resize:vertical;" placeholder="Write your notification message here..."></textarea>
+      <div style="display:flex; gap:0.5rem;">
         <button class="btn" onclick="sendNotification()">Send Now</button>
         <button class="btn btn-gray" onclick="closeSendModal()">Cancel</button>
       </div>
@@ -84,6 +92,7 @@
     async function init() {
       const session = await Auth.getSession();
       const role = localStorage.getItem("userRole");
+
       if (role === "staff") {
         document.getElementById("send-btn").style.display = "inline-block";
         allNotifications = await Notifications.getAll();
@@ -92,45 +101,49 @@
       } else {
         allNotifications = await Notifications.getAll();
       }
+
       renderStats(allNotifications);
       renderNotifications(allNotifications);
     }
 
     function renderStats(notifs) {
-      document.getElementById("stat-total").textContent = notifs.length;
-      document.getElementById("stat-urgent").textContent = notifs.filter(n => n.notification_type === "Urgent").length;
-      document.getElementById("stat-events").textContent = notifs.filter(n => n.notification_type === "Event").length;
-      document.getElementById("stat-reminders").textContent = notifs.filter(n => n.notification_type === "Reminder").length;
+      document.getElementById("stat-total").textContent    = notifs.length;
+      document.getElementById("stat-urgent").textContent   = notifs.filter(n => n.notification_type === "Urgent").length;
+      document.getElementById("stat-events").textContent   = notifs.filter(n => n.notification_type === "Event").length;
+      document.getElementById("stat-reminders").textContent= notifs.filter(n => n.notification_type === "Reminder").length;
     }
 
     function renderNotifications(notifs) {
       const container = document.getElementById("notifications-list");
-      container.innerHTML = notifs.length === 0
-        ? `<p class="text-muted text-center">No notifications found.</p>`
-        : notifs.map(n => `
-            <div class="notification-item ${(n.notification_type || "").toLowerCase()}">
-              <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
-              <p class="notif-content">${n.notification_content}</p>
-              <small class="notif-time">${new Date(n.notification_timestamp).toLocaleString("en-PH")}</small>
-            </div>`).join("");
+      if (!notifs.length) {
+        container.innerHTML = `<p style="color:#888; text-align:center; padding:2rem;">No notifications found.</p>`;
+        return;
+      }
+      container.innerHTML = notifs.map(n => `
+        <div class="notification-item ${(n.notification_type || "").toLowerCase()}">
+          <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
+          <p style="margin:0.5rem 0;">${n.notification_content}</p>
+          <small style="color:#aaa;">${formatDateTime(n.notification_timestamp)}</small>
+        </div>
+      `).join("");
     }
 
     function filterNotifs(type, btn) {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const filtered = type === "all" ? allNotifications : allNotifications.filter(n => n.notification_type === type);
-      renderNotifications(filtered);
+      renderNotifications(type === "all" ? allNotifications : allNotifications.filter(n => n.notification_type === type));
     }
 
     function openSendModal()  { document.getElementById("send-modal").style.display = "flex"; }
     function closeSendModal() { document.getElementById("send-modal").style.display = "none"; }
 
     async function sendNotification() {
-      const type = document.getElementById("notif-type").value;
+      const type    = document.getElementById("notif-type").value;
       const content = document.getElementById("notif-content").value.trim();
       if (!content) { alert("Please enter a message."); return; }
       const success = await Notifications.send({ type, content });
       if (success) { closeSendModal(); await init(); }
+      else alert("Failed to send notification.");
     }
 
     init();

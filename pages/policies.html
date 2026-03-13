@@ -9,67 +9,56 @@
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div class="nav-logo">
+      <img src="../mapua-logo.png" alt="Mapua" style="height:32px; vertical-align:middle; margin-right:0.5rem;" />
+      <strong>RedTrace</strong>
+    </div>
     <div>
       <a href="../index.html">Home</a>
       <a href="notifications.html">Notifications</a>
-      <a href="login.html" class="btn">Donate Now</a>
+      <a href="login.html" class="btn btn-sm">Donate Now</a>
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container" style="max-width:700px;">
+    <p style="text-align:center; color:#c0392b; font-size:0.85rem;">Help Center</p>
+    <h2 style="text-align:center;">Help &amp; Policies</h2>
+    <p style="text-align:center; color:#888; font-size:0.9rem;">Find answers to common questions and learn about our policies and guidelines.</p>
 
-    <div class="policies-header">
-      <p class="text-red text-sm">ℹ Help Center</p>
-      <h2>Help &amp; Policies</h2>
-      <p>Find answers to common questions and learn about our policies and guidelines.</p>
-    </div>
-
-    <div class="tab-bar-center">
+    <div class="tab-bar" style="justify-content:center;">
       <button class="tab-btn active" onclick="showPanel('faq-panel', this)">FAQs</button>
       <button class="tab-btn" onclick="showPanel('policy-panel', this)">Policies</button>
     </div>
 
-    <!-- FAQ PANEL -->
     <div id="faq-panel" class="panel">
       <h3>Frequently Asked Questions</h3>
 
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          Who can donate blood? <span>▼</span>
-        </div>
-        <div class="faq-answer">
-          Generally, you can donate blood if you are at least 17 years old, weigh at least 50 kg, and are in good health. You must not have donated blood in the last 3 months.
-        </div>
+        <div class="faq-question" onclick="toggleFaq(this)">Who can donate blood? <span>&#9660;</span></div>
+        <div class="faq-answer">Generally, you can donate blood if you are at least 17 years old, weigh at least 50 kg, and are in good health. You must not have donated blood in the last 3 months.</div>
       </div>
+
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          How often can I donate blood? <span>▼</span>
-        </div>
-        <div class="faq-answer">
-          Whole blood can typically be donated every 3 months (56 days). The system will automatically track your next eligible donation date.
-        </div>
+        <div class="faq-question" onclick="toggleFaq(this)">How often can I donate blood? <span>&#9660;</span></div>
+        <div class="faq-answer">Whole blood can typically be donated every 3 months (56 days). The system will automatically track your next eligible donation date.</div>
       </div>
+
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          What happens during the screening process? <span>▼</span>
-        </div>
-        <div class="faq-answer">
-          You will first complete a self-assessment form online. On donation day, a medical staff member will check your vital signs including blood pressure, pulse, hemoglobin level, and weight before approving you for donation.
-        </div>
+        <div class="faq-question" onclick="toggleFaq(this)">What happens during the screening process? <span>&#9660;</span></div>
+        <div class="faq-answer">You will first complete a self-assessment form online. On donation day, a medical staff member will check your vital signs including blood pressure, pulse, and weight before approving you for donation.</div>
       </div>
+
       <div class="faq-item">
-        <div class="faq-question" onclick="toggleFaq(this)">
-          How do I track my donation history? <span>▼</span>
-        </div>
-        <div class="faq-answer">
-          Log in to your Donor Dashboard and click the "Donation History" tab to view all your past donations and statuses.
-        </div>
+        <div class="faq-question" onclick="toggleFaq(this)">How do I track my donation history? <span>&#9660;</span></div>
+        <div class="faq-answer">Log in to your Donor Dashboard and click the "Donation History" tab to view all your past donations and statuses.</div>
       </div>
-      <!-- ADD MORE FAQ ITEMS HERE -->
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">What should I do before donating? <span>&#9660;</span></div>
+        <div class="faq-answer">Get adequate sleep the night before, eat a healthy meal, drink plenty of water, and avoid fatty foods. Bring a valid ID on donation day.</div>
+      </div>
     </div>
 
-    <!-- POLICIES PANEL -->
     <div id="policy-panel" class="panel hidden">
       <h3>Blood Donation Policies</h3>
 
@@ -77,25 +66,24 @@
         <h4>Donor Eligibility Policy</h4>
         <p>All donors must meet minimum health and age requirements set by the Department of Health (DOH) and JRMMC. Donors who fail the self-assessment or physical screening will not be permitted to donate during that session.</p>
       </div>
+
       <div class="policy-section">
         <h4>Data Privacy Policy</h4>
-        <p>All personal and medical information collected through Mapúa RedTrace is governed by the Data Privacy Act of 2012 (Republic Act 10173). Donor information is used solely for the management of the blood donation program and will not be shared with unauthorized third parties.</p>
+        <p>All personal and medical information collected through Mapua RedTrace is governed by the Data Privacy Act of 2012 (Republic Act 10173). Donor information is used solely for the management of the blood donation program and will not be shared with unauthorized third parties.</p>
       </div>
+
       <div class="policy-section">
         <h4>Appointment and Scheduling Policy</h4>
         <p>Donors are required to complete the self-assessment form before their scheduled donation appointment. Walk-in donations may be accepted subject to staff availability and inventory needs.</p>
       </div>
+
       <div class="policy-section">
         <h4>Blood Inventory and Usage Policy</h4>
-        <p>Collected blood units are stored and managed by JRMMC in accordance with national blood banking standards. Blood units are allocated based on medical priority and request status (Pending / Approved / Released).</p>
+        <p>Collected blood units are stored and managed by JRMMC in accordance with national blood banking standards. Blood units are allocated based on medical priority and request status.</p>
       </div>
-      <!-- ADD MORE POLICY SECTIONS HERE -->
     </div>
-
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js"></script>
   <script>
     function showPanel(panelId, btn) {
       document.querySelectorAll(".panel").forEach(p => p.classList.add("hidden"));
@@ -103,11 +91,10 @@
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     }
-
     function toggleFaq(questionEl) {
       const answer = questionEl.nextElementSibling;
       answer.classList.toggle("open");
-      questionEl.querySelector("span").textContent = answer.classList.contains("open") ? "▲" : "▼";
+      questionEl.querySelector("span").textContent = answer.classList.contains("open") ? "&#9650;" : "&#9660;";
     }
   </script>
 </body>

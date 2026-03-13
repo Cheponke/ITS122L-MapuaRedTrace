@@ -1,0 +1,8 @@
+<!ELEMENT inventory (unit+)>
+<!ELEMENT unit (blood_type, quantity_ml, storage_location, expiration_date, inventory_status)>
+<!ATTLIST unit id ID #REQUIRED>
+<!ELEMENT blood_type (#PCDATA)>
+<!ELEMENT quantity_ml (#PCDATA)>
+<!ELEMENT storage_location (#PCDATA)>
+<!ELEMENT expiration_date (#PCDATA)>
+<!ELEMENT inventory_status (#PCDATA)>

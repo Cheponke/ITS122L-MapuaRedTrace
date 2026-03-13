@@ -3,47 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapúa RedTrace — Home</title>
+  <title>Mapua RedTrace — Home</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 Mapúa RedTrace</strong></div>
-    <div class="nav-links">
+    <div class="nav-logo">
+      <img src="mapua-logo.png" alt="Mapua" style="height:32px; vertical-align:middle; margin-right:0.5rem;" />
+      <strong>RedTrace</strong>
+    </div>
+    <div>
       <a href="index.html">Home</a>
       <a href="pages/policies.html">Help/Policies</a>
       <a href="pages/notifications.html">Notifications</a>
-      <a href="pages/login.html" class="btn-donate">Donate Now</a>
+      <a href="pages/login.html" class="btn btn-sm">Donate Now</a>
     </div>
   </nav>
 
   <section class="hero">
-    <div class="hero-content">
-      <h1>Save Lives with <span class="text-red">Red Trace</span></h1>
-      <p>A comprehensive blood donation management system for the Mapúa University community.</p>
-      <div class="hero-actions">
-        <a href="pages/donate.html" class="btn">Donate Now</a>
-        <a href="pages/donor-dashboard.html" class="btn-outline-red">View Dashboard</a>
-      </div>
-    </div>
+    <img src="mapua-logo.png" alt="Mapua RedTrace" style="height:80px; margin-bottom:1rem;" />
+    <h1>Save Lives with <span style="color:#c0392b;">RedTrace</span></h1>
+    <p style="color:#666; max-width:500px; margin:0 auto 1.5rem;">A comprehensive blood donation management system for the Mapua University community.</p>
+    <a href="pages/login.html" class="btn">Donate Now</a>
+    <a href="pages/donor-dashboard.html" class="btn btn-outline" style="margin-left:1rem;">View Dashboard</a>
   </section>
 
-  <section class="stats-home">
-    <div class="stats-container">
-      <div class="stat-card-home">
-        <h2 id="stat-donors">0</h2>
-        <p>Registered Donors</p>
-      </div>
-      <div class="stat-card-home">
-        <h2 id="stat-donations">0</h2>
-        <p>Total Donations</p>
-      </div>
-      <div class="stat-card-home">
-        <h2 id="stat-lives">0</h2>
-        <p>Lives Impacted</p>
-      </div>
+  <section class="stats">
+    <div class="stat-card" style="text-align:center;">
+      <h2 id="stat-donors" style="font-size:2rem; color:#c0392b; margin:0;">—</h2>
+      <p style="margin:0.25rem 0 0; color:#888;">Registered Donors</p>
+    </div>
+    <div class="stat-card" style="text-align:center;">
+      <h2 id="stat-donations" style="font-size:2rem; color:#c0392b; margin:0;">—</h2>
+      <p style="margin:0.25rem 0 0; color:#888;">Total Donations</p>
+    </div>
+    <div class="stat-card" style="text-align:center;">
+      <h2 id="stat-inventory" style="font-size:2rem; color:#c0392b; margin:0;">—</h2>
+      <p style="margin:0.25rem 0 0; color:#888;">Units Available</p>
+    </div>
+    <div class="stat-card" style="text-align:center;">
+      <h2 id="stat-lives" style="font-size:2rem; color:#c0392b; margin:0;">—</h2>
+      <p style="margin:0.25rem 0 0; color:#888;">Lives Impacted</p>
     </div>
   </section>
 
@@ -52,33 +53,20 @@
   <script src="js/utils.js"></script>
   <script>
     async function loadStats() {
-      try {
-        // Fetch Donor Count using your project's table constants
-        const { count: donorCount } = await supabaseClient
-          .from(TABLES.DONORS)
-          .select("*", { count: "exact", head: true });
+      const { count: donorCount } = await supabaseClient
+        .from(TABLES.DONORS).select("*", { count: "exact", head: true });
+      const { count: donationCount } = await supabaseClient
+        .from(TABLES.DONATION_PROCESS).select("*", { count: "exact", head: true });
+      const { count: inventoryCount } = await supabaseClient
+        .from(TABLES.BLOOD_INVENTORY)
+        .select("*", { count: "exact", head: true })
+        .eq("inventory_status", "Available");
 
-        // Fetch Donation Count
-        const { count: donationCount } = await supabaseClient
-          .from(TABLES.DONATION_PROCESS)
-          .select("*", { count: "exact", head: true });
-
-        // Update UI
-        document.getElementById("stat-donors").textContent = donorCount ?? "0";
-        document.getElementById("stat-donations").textContent = donationCount ?? "0";
-        
-        // Impact calculation: One donation can save up to 3 lives
-        document.getElementById("stat-lives").textContent = donationCount ? (donationCount * 3) : "0";
-      } catch (error) {
-        console.error("Error loading stats:", error);
-        // Fallback to 0 if there's an error
-        document.getElementById("stat-donors").textContent = "0";
-        document.getElementById("stat-donations").textContent = "0";
-        document.getElementById("stat-lives").textContent = "0";
-      }
+      document.getElementById("stat-donors").textContent    = donorCount    ?? "—";
+      document.getElementById("stat-donations").textContent = donationCount ?? "—";
+      document.getElementById("stat-inventory").textContent = inventoryCount ?? "—";
+      document.getElementById("stat-lives").textContent     = donationCount ? donationCount * 3 : "—";
     }
-
-    // Initialize stats on load
     loadStats();
   </script>
 </body>

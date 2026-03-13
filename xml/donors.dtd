@@ -1,0 +1,13 @@
+<!ELEMENT donors (donor+)>
+<!ELEMENT donor (first_name, last_name, email, contact_number, blood_type, birth_date, sex, address, registration_date, status)>
+<!ATTLIST donor id ID #REQUIRED>
+<!ELEMENT first_name (#PCDATA)>
+<!ELEMENT last_name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT contact_number (#PCDATA)>
+<!ELEMENT blood_type (#PCDATA)>
+<!ELEMENT birth_date (#PCDATA)>
+<!ELEMENT sex (#PCDATA)>
+<!ELEMENT address (#PCDATA)>
+<!ELEMENT registration_date (#PCDATA)>
+<!ELEMENT status (#PCDATA)>

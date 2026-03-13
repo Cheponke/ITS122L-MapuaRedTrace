@@ -9,7 +9,10 @@
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 Mapua RedTrace</strong></div>
+    <div class="nav-logo">
+      <img src="../mapua-logo.png" alt="Mapua" style="height:32px; vertical-align:middle; margin-right:0.5rem;" />
+      <strong>RedTrace</strong>
+    </div>
     <div>
       <a href="../index.html">Home</a>
       <a href="policies.html">Help/Policies</a>
@@ -18,56 +21,66 @@
   </nav>
 
   <div class="login-container">
-    <p class="login-tagline">❤️ Donate Now</p>
-    <h2 class="text-center">Welcome Back</h2>
-    <p class="login-subtitle">Sign in to access your dashboard and track your donations.</p>
+    <p style="text-align:center; color:#c0392b; font-size:0.85rem; margin-bottom:0.25rem;">
+      <img src="../red-bg.jpg" alt="" style="display:none;" />Donate Now
+    </p>
+    <h2 style="text-align:center; margin-top:0;">Welcome Back</h2>
+    <p style="text-align:center; color:#666; font-size:0.9rem;">Sign in to access your dashboard and track your donations.</p>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchFormTab('login')">Sign In</button>
-      <button class="tab-btn" onclick="switchFormTab('register')">Register</button>
+      <button class="tab-btn active" onclick="switchFormTab('login', this)">Sign In</button>
+      <button class="tab-btn" onclick="switchFormTab('register', this)">Register</button>
     </div>
 
     <!-- SIGN IN -->
     <div id="login-panel">
       <label>Login As</label>
       <div class="role-toggle">
-        <button class="role-btn active" id="role-donor" onclick="setRole('donor')">❤ Donor</button>
-        <button class="role-btn" id="role-staff" onclick="setRole('staff')">🏥 Hospital Staff</button>
+        <button class="role-btn active" id="role-donor" onclick="setRole('donor')">Donor</button>
+        <button class="role-btn" id="role-staff" onclick="setRole('staff')">Hospital Staff</button>
       </div>
       <label>Email Address</label>
       <input type="email" id="login-email" placeholder="your.email@university.edu" />
       <label>Password</label>
       <input type="password" id="login-password" placeholder="Enter your password" />
       <div class="error" id="login-error"></div>
-      <button class="btn btn-full" onclick="handleLogin()">Sign In</button>
+      <button class="btn" style="width:100%; margin-top:0.5rem;" onclick="handleLogin()">Sign In</button>
     </div>
 
-    <!-- REGISTER FORM -->
+    <!-- REGISTER -->
     <div id="register-panel" class="hidden">
-  <label>First Name</label>
-  <input type="text" id="reg-firstname" placeholder="Enter your first name" />
-  <label>Last Name</label>
-  <input type="text" id="reg-lastname" placeholder="Enter your last name" />
-  <label>Email</label>
-  <input type="email" id="reg-email" placeholder="your.email@university.edu" />
-  <label>Phone Number</label>
-  <input type="tel" id="reg-phone" placeholder="+63 912 345 6789" />
-  <label>Blood Type</label>
-  <select id="reg-bloodtype">
-    <option value="">Select blood type</option>
-    <option>A+</option><option>A-</option>
-    <option>B+</option><option>B-</option>
-    <option>AB+</option><option>AB-</option>
-    <option>O+</option><option>O-</option>
-  </select>
-  <label>Address</label>
-  <input type="text" id="reg-address" placeholder="Enter your address" />
-  <label>Password</label>
-  <input type="password" id="reg-password" placeholder="Minimum 8 characters" />
-  <label>Confirm Password</label>
-  <input type="password" id="reg-confirm" placeholder="Confirm your password" />
-  <div class="error" id="register-error"></div>
-  <button class="btn" onclick="handleRegister()">Create Account</button>
+      <label>First Name *</label>
+      <input type="text" id="reg-firstname" placeholder="Enter your first name" />
+      <label>Last Name *</label>
+      <input type="text" id="reg-lastname" placeholder="Enter your last name" />
+      <label>Email *</label>
+      <input type="email" id="reg-email" placeholder="your.email@university.edu" />
+      <label>Phone Number *</label>
+      <input type="tel" id="reg-phone" placeholder="+63 912 345 6789" />
+      <label>Birth Date *</label>
+      <input type="date" id="reg-birthdate" />
+      <label>Sex *</label>
+      <select id="reg-sex">
+        <option value="">Select sex</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <label>Blood Type</label>
+      <select id="reg-bloodtype">
+        <option value="">Select blood type (if known)</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+      </select>
+      <label>Address *</label>
+      <input type="text" id="reg-address" placeholder="Enter your address" />
+      <label>Password *</label>
+      <input type="password" id="reg-password" placeholder="Minimum 8 characters" />
+      <label>Confirm Password *</label>
+      <input type="password" id="reg-confirm" placeholder="Confirm your password" />
+      <div class="error" id="register-error"></div>
+      <button class="btn" style="width:100%; margin-top:0.5rem;" onclick="handleRegister()">Create Account</button>
     </div>
   </div>
 
@@ -84,45 +97,38 @@
       document.getElementById("role-staff").classList.toggle("active", role === "staff");
     }
 
-    function switchFormTab(tab) {
+    function switchFormTab(tab, btn) {
       document.getElementById("login-panel").classList.toggle("hidden", tab !== "login");
       document.getElementById("register-panel").classList.toggle("hidden", tab !== "register");
-      document.querySelectorAll(".tab-btn").forEach((btn, i) => {
-        btn.classList.toggle("active", (i === 0 && tab === "login") || (i === 1 && tab === "register"));
-      });
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
     }
 
     function handleLogin() {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
       if (!email || !password) { showError("login-error", "Please fill in all fields."); return; }
+      hideError("login-error");
       Auth.login(email, password, selectedRole);
     }
 
     function handleRegister() {
-  const password = document.getElementById("reg-password").value;
-  const confirm = document.getElementById("reg-confirm").value;
-  if (password !== confirm) { showError("register-error", "Passwords do not match."); return; }
-  Auth.register({
-    firstName: document.getElementById("reg-firstname").value.trim(),
-    lastName: document.getElementById("reg-lastname").value.trim(),
-    email: document.getElementById("reg-email").value.trim(),
-    phone: document.getElementById("reg-phone").value.trim(),
-    bloodType: document.getElementById("reg-bloodtype").value,
-    address: document.getElementById("reg-address").value.trim(),
-    password,
-    });
-  }
-  </script>
-  <script>
-  window.addEventListener('scroll', function() {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 50) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
+      const password = document.getElementById("reg-password").value;
+      const confirm  = document.getElementById("reg-confirm").value;
+      if (password !== confirm) { showError("register-error", "Passwords do not match."); return; }
+      hideError("register-error");
+      Auth.register({
+        firstName: document.getElementById("reg-firstname").value.trim(),
+        lastName:  document.getElementById("reg-lastname").value.trim(),
+        email:     document.getElementById("reg-email").value.trim(),
+        phone:     document.getElementById("reg-phone").value.trim(),
+        birthDate: document.getElementById("reg-birthdate").value,
+        sex:       document.getElementById("reg-sex").value,
+        bloodType: document.getElementById("reg-bloodtype").value,
+        address:   document.getElementById("reg-address").value.trim(),
+        password,
+      });
     }
-  });
-</script>
+  </script>
 </body>
 </html>

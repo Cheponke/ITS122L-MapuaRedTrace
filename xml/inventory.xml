@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inventory SYSTEM "inventory.dtd">
+<inventory>
+  <unit id="INV001">
+    <blood_type>O+</blood_type>
+    <quantity_ml>450</quantity_ml>
+    <storage_location>Main Blood Bank</storage_location>
+    <expiration_date>2025-04-15</expiration_date>
+    <inventory_status>Available</inventory_status>
+  </unit>
+  <unit id="INV002">
+    <blood_type>A+</blood_type>
+    <quantity_ml>450</quantity_ml>
+    <storage_location>Main Blood Bank</storage_location>
+    <expiration_date>2025-04-20</expiration_date>
+    <inventory_status>Available</inventory_status>
+  </unit>
+  <unit id="INV003">
+    <blood_type>B-</blood_type>
+    <quantity_ml>450</quantity_ml>
+    <storage_location>Emergency Reserve</storage_location>
+    <expiration_date>2025-04-10</expiration_date>
+    <inventory_status>Reserved</inventory_status>
+  </unit>
+</inventory>

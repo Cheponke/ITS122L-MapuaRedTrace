@@ -9,142 +9,109 @@
 <body>
 
   <nav>
-    <div class="nav-logo"><strong>🩸 RedTrace</strong></div>
+    <div class="nav-logo">
+      <img src="../mapua-logo.png" alt="Mapua" style="height:32px; vertical-align:middle; margin-right:0.5rem;" />
+      <strong>RedTrace</strong>
+    </div>
     <div>
-      <a href="../index.html">Home</a>
+      <a href="policies.html">Help/Policies</a>
       <a href="notifications.html">Notifications</a>
+      <button onclick="Auth.logout()" class="btn-signout">Sign Out</button>
     </div>
   </nav>
 
-  <div class="donation-container">
+  <div class="breadcrumb">Donate Now</div>
 
-    <!-- Progress -->
-    <div class="progress">
-      <div class="step-indicator active" id="ind-1">
-        <div class="step-num">1</div><div>Self-Assessment</div>
-      </div>
-      <div class="step-indicator" id="ind-2">
-        <div class="step-num">2</div><div>Physical Screening</div>
-      </div>
-      <div class="step-indicator" id="ind-3">
-        <div class="step-num">3</div><div>Confirm Donation</div>
-      </div>
-      <div class="step-indicator" id="ind-4">
-        <div class="step-num">4</div><div>Complete</div>
-      </div>
+  <!-- STEPPER -->
+  <div class="stepper">
+    <div class="step active" id="stp-1">
+      <div class="step-line"></div>
+      <div class="step-circle">1</div>
+      <div class="step-label">Self-Assessment</div>
     </div>
-
-    <!-- STEP 1: SELF-ASSESSMENT -->
-    <div class="step-panel active" id="step-1">
-      <h2>Self-Assessment Screening</h2>
-      <p class="text-muted text-sm">Please answer all questions honestly to determine your eligibility.</p>
-
-      <div class="question">
-        <span>General Health — Are you feeling healthy and well today?</span>
-        <div class="yes-no">
-          <button onclick="setAnswer(this, 'healthy', 'yes')">Yes</button>
-          <button onclick="setAnswer(this, 'healthy', 'no')">No</button>
-        </div>
-      </div>
-      <div class="question">
-        <span>General Health — Have you had any cold, flu, or fever in the past 14 days?</span>
-        <div class="yes-no">
-          <button onclick="setAnswer(this, 'illness', 'yes')">Yes</button>
-          <button onclick="setAnswer(this, 'illness', 'no')">No</button>
-        </div>
-      </div>
-      <div class="question">
-        <span>Medications — Have you taken any antibiotics in the past 14 days?</span>
-        <div class="yes-no">
-          <button onclick="setAnswer(this, 'antibiotics', 'yes')">Yes</button>
-          <button onclick="setAnswer(this, 'antibiotics', 'no')">No</button>
-        </div>
-      </div>
-      <!-- ADD MORE QUESTIONS HERE -->
-
-      <br>
-      <button class="btn" onclick="submitSelfAssessment()">Submit Self-Assessment</button>
+    <div class="step" id="stp-2">
+      <div class="step-line"></div>
+      <div class="step-circle">2</div>
+      <div class="step-label">Physical Screening</div>
     </div>
-
-    <!-- STEP 2: PHYSICAL SCREENING -->
-    <div class="step-panel" id="step-2">
-      <h2>Physical Screening</h2>
-      <p class="text-muted text-sm">A medical staff member will check your vital signs.</p>
-
-      <div class="screening-info">
-        <strong>👩‍⚕️ Staff Physical Examination</strong><br>
-        <small>A staff member will enter the results below after examining the donor.</small>
-      </div>
-
-      <label>Blood Pressure (mmHg)</label>
-      <input type="text" id="screen-bp" placeholder="e.g. 120/80" />
-      <label>Pulse Rate (bpm)</label>
-      <input type="number" id="screen-pulse" placeholder="e.g. 72" />
-      <label>Hemoglobin Level (g/dL)</label>
-      <input type="number" id="screen-hgb" placeholder="e.g. 13.5" />
-      <label>Weight (kg)</label>
-      <input type="number" id="screen-weight" placeholder="e.g. 60" />
-
-      <div class="screening-actions">
-        <button class="btn" onclick="submitScreening(true)">✓ Approve — Proceed to Donation</button>
-        <button class="btn btn-gray" onclick="submitScreening(false)">✗ Reject</button>
-      </div>
+    <div class="step" id="stp-3">
+      <div class="step-line"></div>
+      <div class="step-circle">3</div>
+      <div class="step-label">Confirm Donation</div>
     </div>
-
-    <!-- STEP 3: CONFIRM DONATION -->
-    <div class="step-panel" id="step-3">
-      <h2>Confirm Donation</h2>
-      <div class="success-box">
-        <p>✅ <strong>All Screenings Passed</strong></p>
-        <p class="text-muted text-sm">The donor is cleared to donate blood.</p>
-      </div>
-      <br>
-      <h3>Donation Details</h3>
-      <label>Donation Date</label>
-      <input type="text" id="donation-date" readonly />
-      <label>Blood Type</label>
-      <input type="text" id="donation-blood-type" placeholder="e.g. O+" />
-      <label>Volume Collected (mL)</label>
-      <input type="number" id="donation-qty" placeholder="e.g. 450" />
-      <label>Location</label>
-      <input type="text" id="donation-location" placeholder="e.g. University Medical Center" />
-      <br>
-      <button class="btn" onclick="confirmDonation()">Confirm Donation</button>
-    </div>
-
-    <!-- STEP 4: COMPLETE -->
-    <div class="step-panel" id="step-4">
-      <div class="completion-wrap">
-        <div class="heart-icon">❤️</div>
-        <h2>Thank You for Donating!</h2>
-        <p>Your donation has been completed successfully.</p>
-        <div class="summary-box">
-          <strong>🩸 Donation Summary</strong>
-          <p id="summary-date">Date: —</p>
-          <p id="summary-location">Location: —</p>
-          <p id="summary-qty">Volume: —</p>
-        </div>
-        <a href="donor-dashboard.html" class="btn">Back to Dashboard</a>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- INELIGIBILITY POPUP -->
-  <div class="popup-overlay" id="assessment-popup">
-    <div class="popup-box">
-      <h3>⚠ Not Eligible</h3>
-      <p class="popup-message">You are not eligible to donate at this time.</p>
-      <button class="btn" onclick="closePopup('assessment-popup')">Close</button>
+    <div class="step" id="stp-4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Complete</div>
     </div>
   </div>
 
-  <!-- SCREENING REJECTION POPUP -->
-  <div class="popup-overlay" id="screening-popup">
-    <div class="popup-box">
-      <h3>⚠ Screening Failed</h3>
-      <p class="popup-message">Donor did not pass physical screening.</p>
-      <button class="btn" onclick="closePopup('screening-popup')">Close</button>
+  <!-- STEP 1: SELF ASSESSMENT -->
+  <div class="donate-page active" id="page-assessment">
+    <h2>Self-Assessment Screening</h2>
+    <p class="subtitle">Please answer all questions honestly to determine your eligibility.</p>
+    <div id="assessment-questions"></div>
+    <button class="btn" style="margin-top:1rem;" onclick="submitAssessment()">Submit Assessment</button>
+  </div>
+
+  <!-- STEP 2: PHYSICAL SCREENING -->
+  <div class="donate-page" id="page-screening">
+    <h2>Physical Screening</h2>
+    <p class="subtitle">Hospital staff will check your vital signs.</p>
+    <div class="info-box">
+      <strong>Staff Physical Examination</strong><br/>
+      A medical staff member will now perform a brief physical examination to check your vital signs and ensure you are ready to donate safely.
+    </div>
+    <h3 style="margin-bottom:0.75rem; font-size:0.95rem;">Vital Signs to be Checked</h3>
+    <div class="vital-grid">
+      <div class="vital-card"><div class="vital-label">BLOOD PRESSURE</div><div class="vital-value" id="vital-bp">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">PULSE RATE</div><div class="vital-value" id="vital-pulse">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">TEMPERATURE</div><div class="vital-value" id="vital-temp">Pending...</div></div>
+      <div class="vital-card"><div class="vital-label">WEIGHT</div><div class="vital-value" id="vital-weight">Pending...</div></div>
+    </div>
+    <p style="color:#888; font-size:0.85rem; margin-top:1rem;">Waiting for staff to complete the screening...</p>
+    <button class="btn" style="margin-top:0.5rem;" onclick="checkApprovalStatus()">Check Approval Status</button>
+    <div id="screening-status-msg" style="margin-top:0.5rem; font-size:0.85rem; color:#888;"></div>
+  </div>
+
+  <!-- STEP 3: CONFIRM DONATION -->
+  <div class="donate-page" id="page-donation">
+    <h2>You are Ready to Donate!</h2>
+    <p class="subtitle">Please review and confirm your donation.</p>
+    <div class="success-box">All Screenings Passed — You have passed both self-assessment and physical screening. You are cleared to donate blood.</div>
+    <h3 style="margin-bottom:0.75rem;">Donation Details</h3>
+    <div class="detail-grid">
+      <div class="detail-card"><div class="d-label">DATE</div><div class="d-value" id="don-date">—</div></div>
+      <div class="detail-card"><div class="d-label">LOCATION</div><div class="d-value">Mapua Medical Center</div></div>
+      <div class="detail-card"><div class="d-label">DONATION TYPE</div><div class="d-value">Whole Blood</div></div>
+      <div class="detail-card"><div class="d-label">DURATION</div><div class="d-value">~45 minutes</div></div>
+    </div>
+    <button class="btn btn-green" onclick="confirmDonation()">Confirm Donation</button>
+  </div>
+
+  <!-- STEP 4: COMPLETE -->
+  <div class="donate-page" id="page-complete">
+    <div style="font-size:3rem; text-align:center; margin:1rem 0;">
+      <img src="../mapua-logo.png" alt="" style="height:60px;" />
+    </div>
+    <h2 style="text-align:center;">Thank You for Donating!</h2>
+    <p class="subtitle" style="text-align:center;">Your donation has been completed successfully. Your blood will help save lives!</p>
+    <div class="summary-box">
+      <h3 style="margin-bottom:0.75rem; text-align:center;">Donation Summary</h3>
+      <div class="summary-row"><span>Date</span><strong id="sum-date">—</strong></div>
+      <div class="summary-row"><span>Location</span><strong>Mapua Medical Center</strong></div>
+      <div class="summary-row"><span>Donor ID</span><strong id="sum-donorid">—</strong></div>
+      <div class="summary-row"><span>Blood Type</span><strong id="sum-bloodtype">—</strong></div>
+      <div class="summary-row"><span>Status</span><strong style="color:#27ae60;">Completed</strong></div>
+    </div>
+    <a href="donor-dashboard.html" class="btn" style="display:block; text-align:center; margin-top:1rem;">Back to Dashboard</a>
+  </div>
+
+  <!-- ELIGIBILITY MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box" id="result-modal">
+      <h3 id="modal-title">—</h3>
+      <p id="modal-body">—</p>
+      <button class="btn" onclick="closeModal()">Close</button>
     </div>
   </div>
 
@@ -152,46 +119,136 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../js/donor.js"></script>
   <script src="../js/donation-process.js"></script>
   <script>
-    const answers = {};
     let donorProfile = null;
+    let currentDonationId = null;
+    let assessmentAnswers = {};
+    let lastEligible = false;
+
+    const QUESTIONS = [
+      { key: "isSick",         category: "General Health",  text: "Are you currently feeling unwell or sick?" },
+      { key: "hadFever",       category: "General Health",  text: "Have you had a cold, flu, or fever in the past 14 days?" },
+      { key: "hadAntibiotics", category: "Medications",     text: "Have you taken antibiotics in the past 14 days?" },
+      { key: "hadSurgery",     category: "Medical History", text: "Have you had surgery in the past 6 months?" },
+      { key: "hadTattoo",      category: "Medical History", text: "Have you had a tattoo or piercing in the past 12 months?" },
+      { key: "recentTravel",   category: "Travel",          text: "Have you traveled abroad in the past 3 months?" },
+      { key: "isPregnant",     category: "General Health",  text: "Are you currently pregnant or have given birth in the past 6 months?" },
+    ];
 
     async function init() {
       const session = await Auth.requireAuth();
-      document.getElementById("donation-date").value = new Date().toLocaleDateString("en-PH");
+      if (!session) return;
+      donorProfile = await Donor.getProfile(session.user.id);
+      if (!donorProfile) { alert("Could not load donor profile."); return; }
+      renderQuestions();
+      document.getElementById("don-date").textContent = new Date().toLocaleDateString("en-PH", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+      });
     }
 
-    function setAnswer(btn, question, value) {
-      answers[question] = value;
-      const siblings = btn.parentElement.querySelectorAll("button");
-      siblings.forEach(b => { b.classList.remove("selected-yes", "selected-no"); });
-      btn.classList.add(value === "yes" ? "selected-yes" : "selected-no");
+    function renderQuestions() {
+      document.getElementById("assessment-questions").innerHTML = QUESTIONS.map((q, i) => `
+        <div class="question-group">
+          <div class="category">${q.category}</div>
+          <div class="question-text">${i + 1}. ${q.text}</div>
+          <div class="yn-btns">
+            <button class="yn-btn" id="yn-yes-${i}" onclick="selectAnswer('${q.key}', true, ${i})">Yes</button>
+            <button class="yn-btn" id="yn-no-${i}" onclick="selectAnswer('${q.key}', false, ${i})">No</button>
+          </div>
+        </div>
+      `).join("");
     }
 
-    async function submitSelfAssessment() {
-      await DonationProcess.submitSelfAssessment({ donorId: donorProfile?.donor_id, answers });
+    function selectAnswer(key, value, idx) {
+      assessmentAnswers[key] = value;
+      document.getElementById(`yn-yes-${idx}`).className = "yn-btn" + (value ? " selected-yes" : "");
+      document.getElementById(`yn-no-${idx}`).className  = "yn-btn" + (!value ? " selected-no" : "");
     }
 
-    async function submitScreening(eligible) {
-      const screeningData = {
-        eligible,
-        bp: document.getElementById("screen-bp").value,
-        pulse: document.getElementById("screen-pulse").value,
-        hgb: document.getElementById("screen-hgb").value,
-        weight: document.getElementById("screen-weight").value,
-      };
-      await DonationProcess.submitScreening(null, screeningData);
+    async function submitAssessment() {
+      if (Object.keys(assessmentAnswers).length < QUESTIONS.length) {
+        alert("Please answer all questions before submitting."); return;
+      }
+      if (!donorProfile) { alert("Donor profile not loaded."); return; }
+
+      const result = await DonationProcess.submitSelfAssessment(donorProfile.id, assessmentAnswers);
+      lastEligible = result.isEligible;
+
+      const modal = document.getElementById("result-modal");
+      modal.className = "modal-box " + (result.isEligible ? "eligible" : "not-eligible");
+      document.getElementById("modal-title").textContent =
+        result.isEligible ? "You are Eligible!" : "Not Eligible at This Time";
+      document.getElementById("modal-body").textContent = result.isEligible
+        ? "Congratulations! You passed the self-assessment. A staff member will conduct a physical screening next."
+        : "Based on your responses, you do not meet eligibility criteria at this time. Please consult with a staff member or visit Help for more information.";
+      document.getElementById("modal-overlay").classList.add("open");
+    }
+
+    async function closeModal() {
+      document.getElementById("modal-overlay").classList.remove("open");
+      if (lastEligible && donorProfile) {
+        // Create donation record in DB before advancing to screening step
+        const donationRecord = await DonationProcess.createDonationRecord(
+          donorProfile.id, donorProfile.blood_type
+        );
+        if (donationRecord) {
+          currentDonationId = donationRecord.id;
+          goToStep(2);
+        } else {
+          alert("Failed to create donation record. Please try again.");
+        }
+      }
+    }
+
+    let pollInterval = null;
+    async function checkApprovalStatus() {
+      const msg = document.getElementById("screening-status-msg");
+      if (!currentDonationId) { msg.textContent = "No active donation record found."; return; }
+      msg.textContent = "Checking...";
+      const record = await DonationProcess.checkApprovalStatus(currentDonationId);
+      if (!record) { msg.textContent = "Could not check status."; return; }
+
+      if (record.blood_pressure) document.getElementById("vital-bp").textContent = record.blood_pressure;
+      if (record.pulse_rate) document.getElementById("vital-pulse").textContent = record.pulse_rate + " bpm";
+      if (record.temperature) document.getElementById("vital-temp").textContent = record.temperature + " °C";
+      if (record.weight) document.getElementById("vital-weight").textContent = record.weight + " kg";
+
+      if (record.donation_status === "Approved") {
+        msg.textContent = "Approved! Proceeding...";
+        goToStep(3);
+      } else {
+        msg.textContent = "Status: " + (record.donation_status || "Pending") + " — Still waiting for staff approval.";
+      }
     }
 
     async function confirmDonation() {
-      const bloodType = document.getElementById("donation-blood-type").value;
-      const qty = parseInt(document.getElementById("donation-qty").value);
-      const location = document.getElementById("donation-location").value;
-      await DonationProcess.confirmDonation(donorProfile?.donor_id, null, bloodType, qty);
-      document.getElementById("summary-date").textContent = `Date: ${document.getElementById("donation-date").value}`;
-      document.getElementById("summary-location").textContent = `Location: ${location}`;
-      document.getElementById("summary-qty").textContent = `Volume: ${qty} mL`;
+      if (!currentDonationId) { alert("No active donation record."); return; }
+      const success = await DonationProcess.completeDonation(currentDonationId, 450);
+      if (!success) { alert("Failed to confirm donation. Please try again."); return; }
+
+      await DonationProcess.addToInventory(currentDonationId, donorProfile.blood_type, 450);
+
+      document.getElementById("sum-date").textContent = new Date().toLocaleDateString("en-PH", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+      });
+      document.getElementById("sum-donorid").textContent = donorProfile.donor_id || "—";
+      document.getElementById("sum-bloodtype").textContent = donorProfile.blood_type || "—";
+      goToStep(4);
+    }
+
+    function goToStep(step) {
+      const pages = ["page-assessment", "page-screening", "page-donation", "page-complete"];
+      pages.forEach((id, i) => {
+        document.getElementById(id).classList.toggle("active", i + 1 === step);
+      });
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`stp-${i}`);
+        el.classList.remove("active", "done");
+        if (i === step) el.classList.add("active");
+        else if (i < step) el.classList.add("done");
+      }
     }
 
     init();

@@ -1,31 +1,23 @@
-// ============================================================
-// AUTH MODULE — Login, Register, Logout
-// Handles both Donor and Staff authentication via Supabase Auth
-// ============================================================
-
 const Auth = {
-
-  // ----------------------------------------------------------
-  // LOGIN
-  // Called from: pages/login.html
-  // Redirects donor -> donor-dashboard.html, staff -> staff-dashboard.html
-  // ----------------------------------------------------------
   async login(email, password, role) {
     try {
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
-      // Store role in localStorage for session use
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("userId", data.user.id);
+      const userId = data.user.id;
 
-      if (role === "donor") {
-        window.location.href = "donor-dashboard.html";
-      } else if (role === "staff") {
+      if (role === "staff") {
+        const { data: staffRow } = await supabaseClient
+          .from(TABLES.STAFF).select("*").eq("user_id", userId).maybeSingle();
+        if (!staffRow) throw new Error("No staff record found for this account.");
+        localStorage.setItem("userRole", "staff");
         window.location.href = "staff-dashboard.html";
+      } else {
+        const { data: donorRow } = await supabaseClient
+          .from(TABLES.DONORS).select("*").eq("user_id", userId).maybeSingle();
+        if (!donorRow) throw new Error("No donor record found for this account.");
+        localStorage.setItem("userRole", "donor");
+        window.location.href = "donor-dashboard.html";
       }
     } catch (err) {
       console.error("Login error:", err.message);
@@ -33,75 +25,61 @@ const Auth = {
     }
   },
 
-  // ----------------------------------------------------------
-  // REGISTER (Donor only)
-  // Called from: pages/login.html (Register tab)
-  // Creates Supabase auth user + inserts into donors table
-  // ----------------------------------------------------------
- async register(formData) {
-  try {
-    // Pass user details as metadata — the trigger will insert the donor row automatically
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          phone: formData.phone,
-          role: "donor",
+  async register(formData) {
+    try {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            firstName: formData.firstName,
+            lastName:  formData.lastName,
+            phone:     formData.phone,
+            birthDate: formData.birthDate,
+            sex:       formData.sex,
+            bloodType: formData.bloodType,
+            address:   formData.address,
+            role:      "donor",
+          }
         }
-      }
-    });
-    if (error) throw error;
-    if (!data?.user?.id) throw new Error("No user ID returned.");
+      });
+      if (error) throw error;
+      if (!data?.user?.id) throw new Error("No user ID returned.");
 
-    alert("Registration successful! You can now log in.");
-    window.location.href = "login.html";
+      alert("Registration successful! You can now log in.");
+      window.location.href = "login.html";
+    } catch (err) {
+      console.error("Register error:", err.message);
+      showError("register-error", err.message);
+    }
+  },
 
-  } catch (err) {
-    console.error("Register error:", err.message);
-    showError("register-error", err.message);
-  }
-},
-
-  // ----------------------------------------------------------
-  // LOGOUT
-  // ----------------------------------------------------------
   async logout() {
     await supabaseClient.auth.signOut();
-    localStorage.clear();
-    window.location.href = "../index.html";
+    localStorage.removeItem("userRole");
+    window.location.href = "login.html";
   },
 
-  // ----------------------------------------------------------
-  // GET CURRENT SESSION
-  // ----------------------------------------------------------
   async getSession() {
     const { data } = await supabaseClient.auth.getSession();
-    return data.session;
+    return data?.session || null;
   },
 
-  // ----------------------------------------------------------
-  // GUARD — Redirect to login if not authenticated
-  // Call at top of any protected page
-  // ----------------------------------------------------------
   async requireAuth() {
     const session = await this.getSession();
     if (!session) {
       window.location.href = "login.html";
+      return null;
     }
     return session;
   },
 
-  // ----------------------------------------------------------
-  // GUARD — Redirect if not staff
-  // ----------------------------------------------------------
   async requireStaff() {
-    const session = await this.requireAuth();
+    const session = await this.getSession();
     const role = localStorage.getItem("userRole");
-    if (role !== "staff") {
-      window.location.href = "index.html";
+    if (!session || role !== "staff") {
+      window.location.href = "login.html";
+      return null;
     }
     return session;
   },

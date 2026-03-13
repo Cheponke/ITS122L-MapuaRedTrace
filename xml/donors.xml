@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE donors SYSTEM "donors.dtd">
+<donors>
+  <donor id="D001">
+    <first_name>Juan</first_name>
+    <last_name>Dela Cruz</last_name>
+    <email>jdelacruz@mymail.mapua.edu.ph</email>
+    <contact_number>09171234567</contact_number>
+    <blood_type>O+</blood_type>
+    <birth_date>2000-04-15</birth_date>
+    <sex>Male</sex>
+    <address>Manila, Philippines</address>
+    <registration_date>2025-01-10</registration_date>
+    <status>Active</status>
+  </donor>
+  <donor id="D002">
+    <first_name>Maria</first_name>
+    <last_name>Santos</last_name>
+    <email>msantos@mymail.mapua.edu.ph</email>
+    <contact_number>09289876543</contact_number>
+    <blood_type>A+</blood_type>
+    <birth_date>2001-07-22</birth_date>
+    <sex>Female</sex>
+    <address>Quezon City, Philippines</address>
+    <registration_date>2025-01-12</registration_date>
+    <status>Active</status>
+  </donor>
+</donors>
