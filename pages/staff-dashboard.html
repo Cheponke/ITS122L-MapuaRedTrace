@@ -130,10 +130,25 @@
         <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
       </select>
       <label>Status</label>
-      <select id="modal-status" style="width:100%; padding:0.6rem; margin-bottom:1rem; border:1px solid #ccc; border-radius:6px;">
+      <select id="modal-status" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
         <option>Active</option><option>Inactive</option><option>Pending</option>
       </select>
-      <div style="display:flex; gap:0.5rem;">
+      <label>Contact Number</label>
+      <input type="text" id="modal-contact" style="margin-bottom:0.75rem;" />
+      <label>Birth Date</label>
+      <input type="date" id="modal-birthdate" style="margin-bottom:0.75rem;" />
+      <label>Sex</label>
+      <select id="modal-sex" style="width:100%; padding:0.6rem; margin-bottom:0.75rem; border:1px solid #ccc; border-radius:6px;">
+        <option value="">Select sex</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <label>Address</label>
+      <input type="text" id="modal-address" style="margin-bottom:1rem;" />
+      <hr style="margin:1rem 0; border:none; border-top:1px solid #eee;" />
+      <h4 style="margin-bottom:0.75rem;">Donation Records</h4>
+      <div id="modal-donation-records" style="font-size:0.85rem; color:#888;">Loading...</div>
+      <div style="display:flex; gap:0.5rem; margin-top:1rem;">
         <button class="btn" onclick="saveEditModal()">Save</button>
         <button class="btn btn-gray" onclick="closeModal('edit-modal')">Cancel</button>
       </div>
@@ -299,26 +314,85 @@
     }
 
     // --- DONOR EDIT MODAL ---
-    Staff.openEditModal = function(donorId) {
+    Staff.openEditModal = async function(donorId) {
       const donor = allDonors.find(d => d.id === donorId);
       if (!donor) return;
-      document.getElementById("modal-donor-db-id").value = donor.id;
-      document.getElementById("modal-first-name").value = donor.first_name || "";
-      document.getElementById("modal-last-name").value  = donor.last_name  || "";
-      document.getElementById("modal-email").value      = donor.email       || "";
-      document.getElementById("modal-blood-type").value = donor.blood_type  || "O+";
-      document.getElementById("modal-status").value     = donor.status      || "Active";
+      document.getElementById("modal-donor-db-id").value  = donor.id;
+      document.getElementById("modal-first-name").value   = donor.first_name  || "";
+      document.getElementById("modal-last-name").value    = donor.last_name   || "";
+      document.getElementById("modal-email").value        = donor.email        || "";
+      document.getElementById("modal-blood-type").value   = donor.blood_type  || "O+";
+      document.getElementById("modal-status").value       = donor.status      || "Active";
+      document.getElementById("modal-contact").value      = donor.contact_number || "";
+      document.getElementById("modal-birthdate").value    = donor.birth_date  || "";
+      document.getElementById("modal-sex").value          = donor.sex         || "";
+      document.getElementById("modal-address").value      = donor.address     || "";
+      document.getElementById("modal-donation-records").innerHTML = "Loading...";
       document.getElementById("edit-modal").style.display = "flex";
+
+      const { data: donations, error } = await supabaseClient
+        .from(TABLES.DONATION_PROCESS)
+        .select("*")
+        .eq("donor_id", donor.id)
+        .order("donation_date", { ascending: false });
+
+      const container = document.getElementById("modal-donation-records");
+      if (error || !donations || !donations.length) {
+        container.innerHTML = `<p style="color:#aaa;">No donation records found.</p>`;
+        return;
+      }
+      container.innerHTML = donations.map(d => `
+        <div style="border:1px solid #eee; border-radius:6px; padding:0.75rem; margin-bottom:0.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <strong>${formatDate(d.donation_date)}</strong>
+            <span style="padding:0.15rem 0.5rem; border-radius:10px; font-size:0.75rem;
+              background:${d.donation_status === 'Completed' ? '#eafaf1' : d.donation_status === 'Approved' ? '#e8f4fd' : '#fff8e1'};
+              color:${d.donation_status === 'Completed' ? '#27ae60' : d.donation_status === 'Approved' ? '#2980b9' : '#e67e22'};">
+              ${d.donation_status}
+            </span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+            <div>
+              <label style="font-size:0.75rem; color:#aaa; display:block; margin-bottom:2px;">Blood Type</label>
+              <select onchange="updateDonationField(${d.id}, 'blood_type', this.value)"
+                style="width:100%; padding:0.4rem; border:1px solid #ddd; border-radius:4px; font-size:0.85rem;">
+                ${["A+","A-","B+","B-","AB+","AB-","O+","O-"].map(bt =>
+                  `<option ${d.blood_type === bt ? "selected" : ""}>${bt}</option>`
+                ).join("")}
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:#aaa; display:block; margin-bottom:2px;">Quantity (mL)</label>
+              <input type="number" value="${d.quantity_ml || 450}"
+                onchange="updateDonationField(${d.id}, 'quantity_ml', parseInt(this.value))"
+                style="width:100%; padding:0.4rem; border:1px solid #ddd; border-radius:4px; font-size:0.85rem;" />
+            </div>
+            <div>
+              <label style="font-size:0.75rem; color:#aaa; display:block; margin-bottom:2px;">Status</label>
+              <select onchange="updateDonationField(${d.id}, 'donation_status', this.value)"
+                style="width:100%; padding:0.4rem; border:1px solid #ddd; border-radius:4px; font-size:0.85rem;">
+                ${["Pending","Approved","Completed"].map(s =>
+                  `<option ${d.donation_status === s ? "selected" : ""}>${s}</option>`
+                ).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+      `).join("");
     };
 
     async function saveEditModal() {
       const id = document.getElementById("modal-donor-db-id").value;
       const updates = {
-        first_name: document.getElementById("modal-first-name").value,
-        last_name:  document.getElementById("modal-last-name").value,
-        email:      document.getElementById("modal-email").value,
-        blood_type: document.getElementById("modal-blood-type").value,
-        status:     document.getElementById("modal-status").value,
+        first_name:     document.getElementById("modal-first-name").value,
+        last_name:      document.getElementById("modal-last-name").value,
+        email:          document.getElementById("modal-email").value,
+        blood_type:     document.getElementById("modal-blood-type").value,
+        status:         document.getElementById("modal-status").value,
+        contact_number: document.getElementById("modal-contact").value,
+        birth_date:     document.getElementById("modal-birthdate").value || null,
+        sex:            document.getElementById("modal-sex").value,
+        address:        document.getElementById("modal-address").value,
       };
       const success = await Staff.updateDonor(id, updates);
       if (success) { closeModal("edit-modal"); await loadDonors(); }
@@ -330,6 +404,14 @@
       const success = await Staff.deleteDonor(id);
       if (success) await loadDonors();
       else alert("Failed to delete donor.");
+    }
+
+    async function updateDonationField(donationId, field, value) {
+      const { error } = await supabaseClient
+        .from(TABLES.DONATION_PROCESS)
+        .update({ [field]: value })
+        .eq("id", donationId);
+      if (error) alert("Failed to update: " + error.message);
     }
 
     // --- VITALS MODAL ---

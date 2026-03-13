@@ -81,6 +81,19 @@
     </div>
   </div>
 
+  <!-- NOTIFICATION VIEW MODAL -->
+  <div class="modal-overlay" id="notif-modal" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-box">
+      <span id="notif-modal-type" class="notif-type"></span>
+      <p id="notif-modal-target" style="margin:0.5rem 0; font-size:0.85rem; color:#888;"></p>
+      <p id="notif-modal-content" style="margin:1rem 0; line-height:1.6; font-size:0.95rem;"></p>
+      <small id="notif-modal-timestamp" style="color:#aaa;"></small>
+      <div style="margin-top:1.5rem;">
+        <button class="btn btn-gray" onclick="document.getElementById('notif-modal').style.display='none'">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/utils.js"></script>
@@ -114,19 +127,30 @@
     }
 
     function renderNotifications(notifs) {
-      const container = document.getElementById("notifications-list");
-      if (!notifs.length) {
-        container.innerHTML = `<p style="color:#888; text-align:center; padding:2rem;">No notifications found.</p>`;
-        return;
-      }
-      container.innerHTML = notifs.map(n => `
-        <div class="notification-item ${(n.notification_type || "").toLowerCase()}">
-          <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
-          <p style="margin:0.5rem 0;">${n.notification_content}</p>
-          <small style="color:#aaa;">${formatDateTime(n.notification_timestamp)}</small>
-        </div>
-      `).join("");
-    }
+  const container = document.getElementById("notifications-list");
+  if (!notifs.length) {
+    container.innerHTML = `<p style="color:#888; text-align:center; padding:2rem;">No notifications found.</p>`;
+    return;
+  }
+  container.innerHTML = notifs.map(n => `
+    <div class="notification-item ${(n.notification_type || "").toLowerCase()}" 
+         onclick="openNotifModal(${JSON.stringify(n).replace(/"/g, '&quot;')})" 
+         style="cursor:pointer;">
+      <span class="notif-type ${(n.notification_type || "").toLowerCase()}">${n.notification_type || "Info"}</span>
+      <p style="margin:0.5rem 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.notification_content}</p>
+      <small style="color:#aaa;">${formatDateTime(n.notification_timestamp)}</small>
+    </div>
+    `).join("");
+  }
+
+function openNotifModal(n) {
+  document.getElementById("notif-modal-type").textContent      = n.notification_type || "Info";
+  document.getElementById("notif-modal-type").className        = "notif-type " + (n.notification_type || "").toLowerCase();
+  document.getElementById("notif-modal-content").textContent   = n.notification_content;
+  document.getElementById("notif-modal-target").textContent    = n.target_audience ? "Target: " + n.target_audience + " Donors" : "Target: All Donors";
+  document.getElementById("notif-modal-timestamp").textContent = formatDateTime(n.notification_timestamp);
+  document.getElementById("notif-modal").style.display         = "flex";
+}
 
     function filterNotifs(type, btn) {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -138,13 +162,14 @@
     function closeSendModal() { document.getElementById("send-modal").style.display = "none"; }
 
     async function sendNotification() {
-      const type    = document.getElementById("notif-type").value;
-      const content = document.getElementById("notif-content").value.trim();
-      if (!content) { alert("Please enter a message."); return; }
-      const success = await Notifications.send({ type, content });
-      if (success) { closeSendModal(); await init(); }
-      else alert("Failed to send notification.");
-    }
+  const type    = document.getElementById("notif-type").value;
+  const content = document.getElementById("notif-content").value.trim();
+  const target  = document.getElementById("notif-target").value;
+  if (!content) { alert("Please enter a message."); return; }
+  const success = await Notifications.send({ type, content, target });
+  if (success) { closeSendModal(); await init(); }
+  else alert("Failed to send notification.");
+}
 
     init();
   </script>

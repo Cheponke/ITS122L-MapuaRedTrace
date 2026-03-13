@@ -18,19 +18,20 @@ const Notifications = {
     return data || [];
   },
 
-  async send({ type, content, userId = null }) {
-    const session = await Auth.getSession();
-    if (!session) return false;
-    const { error } = await supabaseClient.from(TABLES.NOTIFICATIONS).insert([{
-      user_id: userId,
-      notification_type: type,
-      notification_content: content,
-      notification_status: "Sent",
-      notification_timestamp: new Date().toISOString(),
-    }]);
-    if (error) { console.error("send notification error:", error.message); return false; }
-    return true;
-  },
+  async send({ type, content, userId = null, target = null }) {
+  const session = await Auth.getSession();
+  if (!session) return false;
+  const { error } = await supabaseClient.from(TABLES.NOTIFICATIONS).insert([{
+    user_id: userId,
+    notification_type: type,
+    notification_content: content,
+    notification_status: "Sent",
+    notification_timestamp: new Date().toISOString(),
+    target_audience: target || null,
+  }]);
+  if (error) { console.error("send notification error:", error.message); return false; }
+  return true;
+},
 
   async delete(id) {
     const { error } = await supabaseClient
